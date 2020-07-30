@@ -132,4 +132,5 @@ dmypy.json
 # my own ignores
 
 corpora/
+app/german_model.bin
 
