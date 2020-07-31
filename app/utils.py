@@ -33,19 +33,19 @@ def remove_special_characters(text, remove_digits=True):
 	return text
 
 
-def plot_word_embeddings(model, search_list):
+def plot_word_embeddings(model, wordlist, figsize=(12, 8)):
 	""" Plots word embeddings. """
 	words = []
-	for term in search_list:
+	for term in wordlist:
 		words += [w[0] for w in model.wv.most_similar([term], topn=5)]                                   
-	words += search_list    
+	words += wordlist    
 
 	vectors = model.wv[words]
 
 	tsne = TSNE(n_components=2, random_state=0, n_iter=10000, perplexity=7)
 	T = tsne.fit_transform(vectors)
 
-	plt.figure(figsize=(16, 10))
+	plt.figure(figsize=figsize)
 	plt.scatter(T[:, 0], T[:, 1])
 	for label, x, y in zip(words, T[:, 0], T[:, 1]):
 		plt.annotate(label, xy=(x+2, y+2), xytext=(0, 0), textcoords='offset points')
