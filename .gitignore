@@ -133,4 +133,5 @@ dmypy.json
 
 corpora/
 app/german_model.bin
+app/cc.en.300.bin
 
