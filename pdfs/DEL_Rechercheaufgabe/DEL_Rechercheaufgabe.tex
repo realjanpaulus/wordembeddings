@@ -146,7 +146,7 @@
     \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
     % Document parameters
     % Document title
-    \title{Rechercheaufgabe}
+    \title{DEL\_Rechercheaufgabe}
     
     
     
@@ -370,22 +370,6 @@
     
 
     
-    TODOS:
-
-\begin{itemize}
-\tightlist
-\item
-  Übersicht über alle Verfahren geben in kapitel 3 (Tabelle?!)
-\item
-  überprüfen Formulierung
-\item
-  untertitel der grafik bei LSA in pdf überprüfen
-\end{itemize}
-
-für generierung: - toc entfernen? - tabelle anpassen in 3.1 - alle
-\%\%time entfernen! - imports entfernen - alle code zeilen gut
-angezeigt? - Fußnoten fixen
-
     Inhaltsverzeichnis{}
 
 {{1~~}Einführung}
@@ -410,64 +394,13 @@ angezeigt? - Fußnoten fixen
 
 {{3.4~~}FastText}
 
-{{3.5~~}ELMo}
+{{4~~}Contextualised word embeddings}
 
-{{3.6~~}BERT}
+{{4.1~~}Allgemeines}
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{6}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k+kn}{import} \PY{n+nn}{gensim}
-\PY{k+kn}{from} \PY{n+nn}{gensim}\PY{n+nn}{.}\PY{n+nn}{models} \PY{k+kn}{import} \PY{n}{Word2Vec}
-\PY{k+kn}{import} \PY{n+nn}{gensim}\PY{n+nn}{.}\PY{n+nn}{downloader} \PY{k}{as} \PY{n+nn}{gensim\PYZus{}downloader}
+{{4.2~~}ELMo}
 
-\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
-\PY{c+c1}{\PYZsh{}\PYZpc{}matplotlib inline}
-\PY{c+c1}{\PYZsh{}\PYZpc{}config InlineBackend.figure\PYZus{}format = \PYZsq{}svg\PYZsq{}}
-\PY{k+kn}{from} \PY{n+nn}{nltk} \PY{k+kn}{import} \PY{n}{word\PYZus{}tokenize}
-\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
-\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
-\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{feature\PYZus{}extraction}\PY{n+nn}{.}\PY{n+nn}{text} \PY{k+kn}{import} \PY{n}{CountVectorizer}
-\PY{k+kn}{import} \PY{n+nn}{urllib}\PY{n+nn}{.}\PY{n+nn}{request}
-
-\PY{k+kn}{from} \PY{n+nn}{utils} \PY{k+kn}{import} \PY{n}{preprocess\PYZus{}text}\PY{p}{,} \PY{n}{plot\PYZus{}word\PYZus{}embeddings}
-\end{Verbatim}
-\end{tcolorbox}
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{text\PYZus{}w2v} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{das kind sagt, dass es feuerwehrmann sein möchte}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
-            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{der erwachsene sagt, dass er lieber kein feuerwehrmann sein möchte}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
-            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{das kind fragt, was der erwachsene denn lieber sein möchte}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
-            \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{der erwachsene sagt, dass er lieber polizist sein möchte}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
-\PY{c+c1}{\PYZsh{}text\PYZus{}w2v = [word\PYZus{}tokenize(sen) for sen in text\PYZus{}w2v]}
-\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{text\PYZus{}w2v}\PY{p}{,} \PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{text}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{7}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{o}{\PYZpc{}\PYZpc{}time}
-\PY{n}{corpus} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{../corpora/small\PYZus{}amazon\PYZus{}reviews\PYZus{}electronic.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\PY{n}{corpus}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{review}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{corpus}\PY{o}{.}\PY{n}{review}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{n}{preprocess\PYZus{}text}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}
-\PY{n}{texts} \PY{o}{=} \PY{p}{[}\PY{n}{word\PYZus{}tokenize}\PY{p}{(}\PY{n}{row}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{review}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)} \PY{k}{for} \PY{n}{idx}\PY{p}{,} \PY{n}{row} \PY{o+ow}{in} \PY{n}{corpus}\PY{o}{.}\PY{n}{iterrows}\PY{p}{(}\PY{p}{)}\PY{p}{]}
-\end{Verbatim}
-\end{tcolorbox}
-
-    \begin{Verbatim}[commandchars=\\\{\}]
-CPU times: user 1min 1s, sys: 1.14 s, total: 1min 2s
-Wall time: 1min 2s
-    \end{Verbatim}
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{url} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{http://cloud.devmount.de/d2bc5672c523b086/german.model}\PY{l+s+s1}{\PYZsq{}}
-\PY{n}{urllib}\PY{o}{.}\PY{n}{request}\PY{o}{.}\PY{n}{urlretrieve}\PY{p}{(}\PY{n}{url}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{german\PYZus{}model.bin}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}
+{{4.3~~}BERT}
 
     \hypertarget{einfuxfchrung}{%
 \section{Einführung}\label{einfuxfchrung}}
@@ -523,7 +456,7 @@ Bereich des Information Retrievals zu verwenden, bei dem die Häufigkeit
 von Worten skaliert wird.
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
+\prompt{In}{incolor}{51}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{text} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ich gehe nachher zur bank, um etwas geld zu holen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
         \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ich möchte mich kurz auf die bank setzen}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
@@ -536,12 +469,26 @@ von Worten skaliert wird.
 \end{Verbatim}
 \end{tcolorbox}
 
+    \begin{Verbatim}[commandchars=\\\{\}]
+\{'ich': 10, 'gehe': 6, 'nachher': 16, 'zur': 24, 'bank': 1, 'um': 21, 'etwas':
+5, 'geld': 7, 'zu': 23, 'holen': 8, 'möchte': 15, 'mich': 13, 'kurz': 11, 'auf':
+0, 'die': 3, 'setzen': 19, 'mir': 14, 'essen': 4, 'stand': 20, 'von': 22, 'der':
+2, 'hölzernen': 9, 'neben': 17, 'liegt': 12, 'noch': 18\}
+    \end{Verbatim}
+
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
+\prompt{In}{incolor}{52}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n+nb}{print}\PY{p}{(}\PY{n}{vector}\PY{o}{.}\PY{n}{toarray}\PY{p}{(}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[[0 1 0 0 0 1 1 1 1 0 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1]
+ [1 1 0 1 0 0 0 0 0 0 1 1 0 1 0 1 0 0 0 1 0 0 0 0 0]
+ [1 1 1 0 1 1 0 0 1 0 1 0 0 0 1 0 0 0 0 0 1 1 1 2 0]
+ [1 2 2 0 0 0 0 1 0 1 0 0 1 0 0 0 0 1 1 0 0 0 0 0 0]]
+    \end{Verbatim}
 
     \hypertarget{grenzen-des-bag-of-words-modells}{%
 \subsection{Grenzen des Bag-of-Words
@@ -564,8 +511,9 @@ Nachteilen, von deinen einige im Folgenden kurz erläutert werden:
   geworfen werden. Die Reihenfolge lässt sich auch nicht im Nachhinein
   rekonstruieren. Insgesamt gehen somit sehr viele semantische
   Informationen verloren. Eine Lösung, bei der die Reihenfolge der Worte
-  berücksichtigt werden kann, ist die Verwendung von \textbf{N-Grammen}
-  oder \textbf{LSA} (Kapitel 2 TODO).
+  berücksichtigt werden kann, ist die Verwendung von \textbf{N-Grammen},
+  \textbf{LSA} (Kapitel 2) oder \textbf{contextualised word embeddings}
+  (Kapitel 4).
 \item
   \textbf{Spärlichkeit von Wortvektoren.} Umso mehr verschiedene Worte
   in den verwendeten Texten vorkommen, umso größer wird das Vokabular.
@@ -578,15 +526,14 @@ Nachteilen, von deinen einige im Folgenden kurz erläutert werden:
   in sehr großen Repräsentationsräumen benutzt, wodurch es für einige
   NLP Verfahren und Modelle problematisch ist, diese wenigen
   Informationen effizient zu nutzen. Eine Lösung bieten dichtbesetzte
-  \textbf{Word Embeddings}, die in den nächsten Kapiteln behandelt
-  werden.
+  \textbf{Word Embeddings}, die in Kapitel 3 und 4 behandelt werden.
 \item
   \textbf{Abbildung der Mehrdeutigkeit von Worten}. Wörter können trotz
   gleicher Schreibweise mehrere Bedeutungen haben, welche sich durch den
   Kontext des Wortes zeigen können. Dies wird durch das Bag-of-Words
   Modell nicht abgebildet. Eine mögliche Lösung wäre die Verwendung von
-  \textbf{kontextabhängigen Word Embeddings} wie die
-  \textbf{BERT-Embeddings} in Kapitel 3.6 (TODO).
+  \textbf{kontextabhängigen Word Embeddings} wie die \textbf{ELMo}- oder
+  \textbf{BERT-Embeddings} in Kapitel 4.
 \end{itemize}
 
     \hypertarget{lsa}{%
@@ -607,7 +554,8 @@ beieinander platziert. Dies wird durch die folgende Grafik deutlich.
 \caption{lsa}
 \end{figure}
 
-Grafik von Susan Dumais, siehe Präsentation.
+Grafik von Susan Dumais
+(\href{http://www.ifis.uni-luebeck.de/~moeller/tuhh-lectures/mmieir-sose-12/05-Latent-Semantic-Analysis.pdf}{Quelle}).
 
     Das Ziel der LSA ist es, die Konzepte innerhalb der Dokumente zu finden.
 Dabei greift das Verfahren auf eine Technik der linearen Algebra zurück,
@@ -638,8 +586,6 @@ Der Vorteil der LSA ist, dass anders als beim Bag-of-Words Modell die
 \textbf{Synonyme} zusammengefasst. Probleme hat LSA jedoch mit der
 \textbf{Polysemie}. Zudem ist der Algorithmus sehr rechenaufwendig.
 
-TODO: mehr?
-
     \hypertarget{word-embeddings}{%
 \section{Word Embeddings}\label{word-embeddings}}
 
@@ -652,29 +598,22 @@ Anders als beim Bag-of-Words Modell werden Wörter mit ähnlichen
 Bedeutungen ähnlich dargestellt, wobei der Kontext der Wörter
 berücksichtigt wird. Word Embeddings repräsentieren Wörter als Vektoren
 in einem multidimensionalen semantischen Raum. In diesem Raum werden
-Wörter, die ähnlich zueinander sind, näher beieinander platziert. Diesen
-Raum kann man sich etwa folgendermaßen vorstellen:
-
-\begin{figure}
-\centering
-\includegraphics{img/we_space.jpg}
-\caption{wordembeddings}
-\end{figure}
-
-    Die grundsätzliche Idee von Word Embeddings basiert auf der
+Wörter, die ähnlich zueinander sind, näher beieinander platziert. Die
+grundsätzliche Idee von Word Embeddings basiert auf der
 \textbf{Distributionellen Hypothese} von John Rupert Firth, die besagt,
 dass die Bedeutung eines Wortes durch sein Umfeld geprägt ist. Wörter,
 die einen ähnlichen Kontext besitzen, haben eine ähnliche Bedeutung.
 Anders als vorherige Vektorisierungsmethoden basieren Word Embeddings
-auf \textbf{Vorhersage-Modellen} (englisch: \textbf{prediction models}),
-indem Wörter durch Wahrscheinlichkeiten anstatt durch Häufigkeiten wie
-beim Bag-of-Words Modell oder bei der Latent Semantic Analysis
-dargestellt werden. Weiterhin sind die Wortvektoren von Word Embeddings
-anders als beim Bag-of-Words Modell \textbf{dichtbesetzt} (englisch:
-\textbf{dense}) und haben weitaus weniger Dimensionen (100-800
-Dimensionen anstatt 100000-1000000, je nach der Größe des Vokabulars).
-Dadurch haben die Wortvektoren eine viel geringere Größe, bieten
-trotzdem eine effizientere und komplexere Darstellung der Wörter.
+auf \textbf{Vorhersagemodellen} (englisch: \textbf{prediction
+models})Section \ref{fn2}, indem Wörter durch Wahrscheinlichkeiten
+anstatt durch Häufigkeiten wie beim Bag-of-Words Modell oder bei der
+Latent Semantic Analysis dargestellt werden. Weiterhin sind die
+Wortvektoren von Word Embeddings anders als beim Bag-of-Words Modell
+\textbf{dichtbesetzt} (englisch: \textbf{dense}) und haben weitaus
+weniger Dimensionen (100-800 Dimensionen anstatt 100000-1000000, je nach
+der Größe des Vokabulars). Dadurch haben die Wortvektoren eine viel
+geringere Größe, bieten trotzdem eine effizientere und komplexere
+Darstellung der Wörter.
 
 Eine weitere Besonderheit von Word Embeddings ist, dass es mit diesen
 möglich ist, eine Arithmetik mit Wörtern umzusetzen. So kann mit
@@ -689,9 +628,19 @@ Word Embeddings wurden ab 2013 durch die Einführung des Algorithmus
 \textbf{Word2Vec} populär, in den Jahren darauf folgten weitere Word
 Embedding Algorithmen wie \textbf{GloVe}, \textbf{FastText},
 \textbf{ELMo} und \textbf{BERT}. In der folgenden Tabelle sind die
-wichtigsten Unterschiede der verschiedenen Embeddings zusammengefasst,
-genauere Erläuterungen der Embeddings befinden sich in den folgenden
-Kapiteln.
+wichtigsten Unterschiede der hier erläuterten Embeddings
+zusammengefasst, genauere Erläuterungen dieser Embeddings finden sich in
+den folgenden Kapiteln. Die darauffolgende Abbildung liefert eine Art
+Stammbaum der verschiedenen Embedding-Arten.
+
+\hypertarget{fn2}{}
+2 ~Obwohl GloVe eigentlich kein Vorhersagemodell verwendet,
+unterscheidet sich GloVe trotzdem stark von vorhergehenden,
+Häufigkeits-basierenden Modellen, weshalb es oft als Vohersagemodell
+angesehen wird, siehe LEVY et. al.~(2015), Improving Distributional
+Similarity with Lessons Learned from Word Embeddings,
+https://levyomer.files.wordpress.com/2015/03/improving-distributional-similarity-tacl-2015.pdf
+(abgerufen am 31.07.2020).
 
     TODO: ausfüllen \& mehr, gucken wie anders dargestellt werden kann
 
@@ -741,16 +690,34 @@ ja
 
 ja
 
+gelernte Repräsentationen
+
+Wörter
+
+Wörter
+
+Teilwörter
+
+Wörter
+
+Teilwörter
+
+    \includegraphics{img/all_embeddings.png}
+
+Die Grafik wurde von dieser
+\href{https://towardsdatascience.com/from-pre-trained-word-embeddings-to-pre-trained-language-models-focus-on-bert-343815627598}{Webseite}
+entnommen.
+
     \hypertarget{word2vec}{%
 \subsection{Word2Vec}\label{word2vec}}
 
 Die Popularität von Word Embeddings ist vor allem \textbf{Word2Vec}
 geschuldet, welches 2013 von Tomas Mikolov und weiteren Mitgliedern von
-Google publiziert wurde. Word2Vec basiert auf einer simplen und
-effektiven Feedforward Neuronalen Netzstruktur. Word2Vec implementiert
-zwei verschiedene Ansätze zur Berechnung der Wortwahrscheinlichkeiten:
-\textbf{Continous Bag of Words} (\textbf{CBOW}) und das
-\textbf{Skip-gram Modell}.
+Google publiziert wurde (\href{https://arxiv.org/abs/1301.3781}{Paper}).
+Word2Vec basiert auf einer simplen und effektiven Feedforward Neuronalen
+Netzstruktur. Word2Vec implementiert zwei verschiedene Ansätze zur
+Berechnung der Wortwahrscheinlichkeiten: \textbf{Continous Bag of Words}
+(\textbf{CBOW}) und das \textbf{Skip-gram Modell}.
 
 \textbf{Continous Bag of Words} versucht die Wahrscheinlichkeit eines
 Wortes oder einer Gruppe von Wörtern anhand eines gegebenen Kontext
@@ -773,7 +740,7 @@ vorauszusagen:
 \end{figure}
 
 Word2Vec nutzt wahlweise eine dieser Techniken, um aus rohen Textdaten
-mithilfe eines Neuronales Netzes Wortvektoren zu erstellen. Dabei kann
+mithilfe eines Neuronalen Netzes Wortvektoren zu erstellen. Dabei kann
 Word2Vec bei vielen Implementierungen (z.b. bei Gensim) auf zwei Arten
 verwendet werden: Entweder werden bereits vortrainierte Embeddings
 geladen oder es werden eigene Embeddings auf eigenen Textdaten
@@ -790,19 +757,19 @@ Zeitungsartikeln trainiert wurde
 Framework wird \textbf{Gensim} verwendet.
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{8}{\boxspacing}
+\prompt{In}{incolor}{54}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{pre\PYZus{}w2v} \PY{o}{=} \PY{n}{gensim}\PY{o}{.}\PY{n}{models}\PY{o}{.}\PY{n}{KeyedVectors}\PY{o}{.}\PY{n}{load\PYZus{}word2vec\PYZus{}format}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{german\PYZus{}model.bin}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
                                                           \PY{n}{binary}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
-    Im folgenden Code werden die 10 ähnlichsten Wörter zu ``König''
+    Im folgenden Code werden die 5 ähnlichsten Wörter zu ``König''
 ausgegeben. Alle diese Wörter passen auch thematisch zu ``König'', sie
 verbindet alle das Thema ``royal'' bzw. ``Königshaus''.
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{9}{\boxspacing}
+\prompt{In}{incolor}{55}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{k}{for} \PY{n}{t} \PY{o+ow}{in} \PY{n}{pre\PYZus{}w2v}\PY{o}{.}\PY{n}{most\PYZus{}similar}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Koenig}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{topn}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:} 
     \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{t}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{: }\PY{l+s+si}{\PYZob{}}\PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{t}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{decimals}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
@@ -817,12 +784,12 @@ Jungkoenig: 0.705
 Kaiser: 0.705
     \end{Verbatim}
 
-    Auch das Rechenbeispiel aus Kapitel 3.1 TODO kann mit Word2Vec umgesetzt
+    Auch das Rechenbeispiel aus Kapitel 3.1 kann mit Word2Vec umgesetzt
 werden. Addiert man ``König'' mit ``Frau'' und subtrahiert ``Mann'',
 erhält man Begriffe zum Thema ``Königin''.
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{13}{\boxspacing}
+\prompt{In}{incolor}{56}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{k}{for} \PY{n}{t} \PY{o+ow}{in} \PY{n}{pre\PYZus{}w2v}\PY{o}{.}\PY{n}{most\PYZus{}similar}\PY{p}{(}\PY{n}{positive}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Koenig}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Frau}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
                               \PY{n}{negative}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mann}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{topn}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:}
@@ -840,31 +807,31 @@ Majestaet: 0.659
 
     Weiterhin kann man auch ein Wort mit einer Liste von anderen Wörtern
 vergleichen und abfragen, welchem Wort aus der Liste das Wort am
-ähnlichsten ist oder man überprüft bei einer Liste von Wörtern, welches
-Wort nicht passt.
+ähnlichsten ist oder aber man überprüft bei einer Liste von Wörtern,
+welches Wort nicht passt.
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{20}{\boxspacing}
+\prompt{In}{incolor}{59}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{most\PYZus{}similar} \PY{o}{=} \PY{n}{pre\PYZus{}w2v}\PY{o}{.}\PY{n}{most\PYZus{}similar\PYZus{}to\PYZus{}given}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Banane}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Koenig}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Berg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
                                                         \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Haus}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Apfel}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
 \PY{n}{doesnt\PYZus{}match} \PY{o}{=} \PY{n}{pre\PYZus{}w2v}\PY{o}{.}\PY{n}{doesnt\PYZus{}match}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Koenig}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Thron}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Berg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Prinzessin}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Welches Wort ist am ähnlichsten zu }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{Banane}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{? \PYZhy{}\PYZgt{} }\PY{l+s+si}{\PYZob{}}\PY{n}{most\PYZus{}similar}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Welches Wort nicht zu den anderen Wörtern? \PYZhy{}\PYZgt{} }\PY{l+s+si}{\PYZob{}}\PY{n}{doesnt\PYZus{}match}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Welches Wort passt nicht zu den anderen Wörtern? \PYZhy{}\PYZgt{} }\PY{l+s+si}{\PYZob{}}\PY{n}{doesnt\PYZus{}match}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
 Welches Wort ist am ähnlichsten zu 'Banane'? -> Apfel
-Welches Wort nicht zu den anderen Wörtern? -> Berg
+Welches Wort passt nicht zu den anderen Wörtern? -> Berg
     \end{Verbatim}
 
-    Die Wortvektoren können mit verwandeten Wörtern (hier die 5 ähnlichsten
-Wörter) auch geplottet werden, wodurch die einzelnen Themen sehr gut
-sichtbar sind.
+    Plottet man die Wortvektoren der verwandten Wörter (hier die 5
+ähnlichsten Wörter), werden die einzelnen Themen sehr gut sichtbar, da
+sie Cluster bilden und von anderen Themen abgrenzen.
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{12}{\boxspacing}
+\prompt{In}{incolor}{58}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{wordlist} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Haus}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Berg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Koenig}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gehen}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
 \PY{n}{plot\PYZus{}word\PYZus{}embeddings}\PY{p}{(}\PY{n}{pre\PYZus{}w2v}\PY{p}{,} \PY{n}{wordlist}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
@@ -872,7 +839,7 @@ sichtbar sind.
 \end{tcolorbox}
 
     \begin{center}
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_27_0.png}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_22_0.png}
     \end{center}
     { \hspace*{\fill} \\}
     
@@ -890,7 +857,7 @@ dem Jahr 2018 gekürzt. Auch hier passen die ähnlichsten 5 Wörter sehr
 gut zum ausgewählten Wort \emph{smartphone}.
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{23}{\boxspacing}
+\prompt{In}{incolor}{10}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{o}{\PYZpc{}\PYZpc{}time}
 \PY{n}{word2vec\PYZus{}cbow} \PY{o}{=} \PY{n}{Word2Vec}\PY{p}{(}\PY{n}{texts}\PY{p}{,} \PY{n}{min\PYZus{}count}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{size}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{window}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{,} \PY{n}{sg}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
@@ -899,169 +866,383 @@ gut zum ausgewählten Wort \emph{smartphone}.
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-CPU times: user 6min 1s, sys: 4.19 s, total: 6min 5s
-Wall time: 2min 53s
+CPU times: user 6min 16s, sys: 5.09 s, total: 6min 21s
+Wall time: 3min 30s
     \end{Verbatim}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{26}{\boxspacing}
+\prompt{In}{incolor}{11}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{n}{word2vec\PYZus{}cbow}\PY{o}{.}\PY{n}{wv}\PY{o}{.}\PY{n}{most\PYZus{}similar}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{phone}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{topn}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
             \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
-\prompt{Out}{outcolor}{26}{\boxspacing}
+\prompt{Out}{outcolor}{11}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-[('iphone', 0.7408102750778198),
- ('phones', 0.657496452331543),
- ('ph', 0.635297954082489),
- ('car', 0.626123309135437),
- ('cell', 0.6212888956069946)]
+[('iphone', 0.7328867316246033),
+ ('cell', 0.6630538702011108),
+ ('phones', 0.6511064767837524),
+ ('smartphone', 0.6296558976173401),
+ ('computer', 0.6081698536872864)]
 \end{Verbatim}
 \end{tcolorbox}
         
     \hypertarget{glove}{%
 \subsection{GloVe}\label{glove}}
 
-\textbf{GloVe} wurde 2014 von Pennigton et. al.~veröffentlicht. Vor der
-Veröffentlichung von Globe ließen sich die Wortvektorisierungsmethoden
+\textbf{GloVe} (= Global Vectors) wurde 2014 von Pennigton et.
+al.~veröffentlicht
+(\href{https://nlp.stanford.edu/pubs/glove.pdf}{Paper}). Vor der
+Veröffentlichung von GloVe ließen sich die Wortvektorisierungsmethoden
 in zwei Hauptströmungen unterteilen: das Statistik-basierende
-\textbf{LDA}Section \ref{fn2} und das lernbasierte \textbf{Word2Vec}.
+\textbf{LDA}Section \ref{fn3} und das lernbasierte \textbf{Word2Vec}.
 Während LDA Wörter mithilfe von Häufigkeiten in einer Kookkurrenz-Matrix
 darstellt, verwendet Word2Vec zur Darstellung der Wörter
 Wortwahrscheinlichkeiten, die mithilfe eines Voraussage-Modells erstellt
-wurden. \textbf{GloVe} verwendet wie LDA für die Darstellung der
-Häufigkeiten eine Kookkurrenz-Matrix, wobei GloVe die Häufigkeiten
-vorher normalisiert und mithilfe des Logarithmus \emph{``glättet''}
-(englisch: \emph{smoothing}). Anders als Word2Vec benutzt es für die
-Erstellung der Embeddings also keine neuronalen Netze
+wurden. \textbf{GloVe} verwendet für die Darstellung der Häufigkeiten
+wie LDA eine Kookkurrenz-Matrix, wobei GloVe die Häufigkeiten vorher
+normalisiert und mithilfe des Logarithmus ``\emph{glättet}'' (englisch:
+\emph{smoothing}). Anders als Word2Vec benutzt es für die Erstellung der
+Embeddings also keine neuronalen Netze, die erst durch ein Training die
+Wortbeziehungen erlernen, sondern die Beziehungen werden \textbf{global}
+(daher auch der Name) mithilfe einer Mischung aus maschinellem Lernen
+und statischen Verfahren aus den Texten gewonnen.
 
-\hypertarget{fn1}{}
-2 ~LDA steht für ``Latent Dirichlet allocation'' und ist ein
+\hypertarget{fn3}{}
+3 ~LDA steht für ``Latent Dirichlet allocation'' und ist ein
 Algorithmus, der Wörter ähnlichen Gruppen anhand der Wahrscheinlichkeit,
 dass sie zusammen in einem Dokument vorkommen, zuordnet.
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
+    Für die Demonstatration der Glove-Embeddings wurde die Bibliothek
+\textbf{Flair} verwendet. Jeder Vektor für jedes Token-Embedding hat
+eine Länge von 100, es wurden jedoch nur die ersten drei Zahlen
+ausgegeben.
 
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{string} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{smartphones have a touchscreen}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{sentence} \PY{o}{=} \PY{n}{Sentence}\PY{p}{(}\PY{n}{string}\PY{p}{,} \PY{n}{use\PYZus{}tokenizer}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{glove\PYZus{}embeddings} \PY{o}{=} \PY{n}{WordEmbeddings}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{glove}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{embed}\PY{p}{(}\PY{n}{sentence}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{token} \PY{o+ow}{in} \PY{n}{sentence}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{token}\PY{o}{.}\PY{n}{text}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{: }\PY{l+s+si}{\PYZob{}}\PY{n}{token}\PY{o}{.}\PY{n}{embedding}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{3}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+}
+          \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{(Vektorlänge: }\PY{l+s+si}{\PYZob{}}\PY{n+nb}{len}\PY{p}{(}\PY{n}{token}\PY{o}{.}\PY{n}{embedding}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
 
-    Beide Modelle lernen geometrische Kodierungen (Vektoren) von Wörtern aus
-ihren Informationen über das gleichzeitige Vorkommen (wie häufig sie
-zusammen in großen Textkorpora vorkommen). Sie unterscheiden sich darin,
-dass word2vec ein ``prädiktives'' Modell ist, während GloVe ein
-``zählbasiertes'' Modell ist. Weitere Informationen zu den Unterschieden
-zwischen diesen beiden Ansätzen finden Sie in diesem Papier: .
-Prädiktive Modelle lernen ihre Vektoren, um ihre Fähigkeit zur
-Vorhersage von Verlust(Zielwort \textbar{} Kontextwörter; Vektoren) zu
-verbessern, d.h. den Verlust der Vorhersage der Zielwörter aus den
-Kontextwörtern angesichts der Vektordarstellungen. In word2vec wird dies
-als Feed-Forward Neuronales Netz gegossen und als solches mittels SGD
-etc. optimiert. Zählbasierte Modelle lernen ihre Vektoren, indem sie im
-Wesentlichen eine Dimensionalitätsreduktion auf der
-Koinzidenz-Zählmatrix durchführen. Zuerst konstruieren sie eine große
-Matrix von (Wörter x Kontext) Ko-Vorkommensinformationen, d.h. für jedes
-``Wort'' (die Zeilen) wird gezählt, wie oft wir dieses Wort in einem
-``Kontext'' (den Spalten) in einem großen Korpus sehen. Die Anzahl der
-``Kontexte'' ist natürlich groß, da sie im Wesentlichen kombinatorisch
-ist. Dann faktorisieren sie also diese Matrix, um eine
-niedrigdimensionale (Wort x Merkmale) Matrix zu erhalten, wobei jede
-Zeile nun eine Vektordarstellung für jedes Wort ergibt. Im Allgemeinen
-geschieht dies durch Minimierung eines ``Rekonstruktionsverlustes'', der
-versucht, die niedrigdimensionalen Darstellungen zu finden, die den
-größten Teil der Varianz in den hochdimensionalen Daten erklären können.
-Im speziellen Fall von GloVe wird die Zählmatrix vorverarbeitet, indem
-die Zählwerte normalisiert und logarithmisch geglättet werden. Dies
-erweist sich als eine gute Sache im Hinblick auf die Qualität der
-gelernten Darstellungen. Wie bereits erwähnt, neigen jedoch, wenn wir
-alle Trainings-Hyperparameter kontrollieren, die Einbettungen, die mit
-den beiden Methoden erzeugt werden, dazu, bei nachgeschalteten
-NLP-Aufgaben sehr ähnlich zu funktionieren. Der zusätzliche Vorteil von
-GloVe gegenüber word2vec besteht darin, dass es einfacher ist, die
-Implementierung zu parallelisieren, was bedeutet, dass es einfacher ist,
-über mehr Daten zu trainieren, was bei diesen Modellen immer eine gute
-Sache ist. Übersetzt mit www.DeepL.com/Translator (kostenlose Version)
-
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-
-\end{Verbatim}
-\end{tcolorbox}
-
-    Um diese Frage besser zu erklären, möchte ich zum Vergleich die LDA mit
-einbeziehen. Vor GloVe lassen sich die Algorithmen von Wortdarstellungen
-in zwei Hauptströme unterteilen, den statistikbasierten (LDA) und den
-lernbasierten (Word2Vec). LDA erzeugt die niedrigdimensionalen
-Wortvektoren durch Singulärwertzerlegung (SVD) auf der
-Ko-Vorkommensmatrix, während Word2Vec ein dreischichtiges neuronales
-Netz verwendet, um die Aufgabe der Wortpaarklassifizierung im
-Zentrumskontext zu erledigen, wobei die Wortvektoren nur das
-Nebenprodukt sind.
-
-Der erstaunlichste Punkt von Word2Vec ist, dass ähnliche Wörter zusammen
-im Vektorraum liegen und arithmetische Operationen auf Wortvektoren
-semantische oder syntaktische Beziehungen herstellen können, z.B.
-``König'' - ``Mann'' + ``Frau'' -\textgreater{} ``Königin'' oder
-``besser'' - ``gut'' + ``schlecht'' -\textgreater{} ``schlechter''.
-Allerdings kann die LDA eine solche lineare Beziehung im Vektorraum
-nicht aufrechterhalten.
-
-Die Motivation von GloVe besteht darin, das Modell zu zwingen, eine
-solche lineare Beziehung auf der Grundlage der Koinzidenzmatrix explizit
-zu erlernen. Im Wesentlichen ist GloVe ein log-bilineares Modell mit
-einem gewichteten Ziel der kleinsten Quadrate. Offensichtlich handelt es
-sich um eine hybride Methode, die maschinelles Lernen auf der Grundlage
-der statistischen Matrix verwendet, und dies ist der allgemeine
-Unterschied zwischen GloVe und Word2Vec.
-
-Wenn wir in das Deduktionsverfahren der Gleichungen in GloVe eintauchen,
-werden wir den Unterschied in der Intuition finden. GloVe stellt fest,
-dass die Verhältnisse der Wort-Wort-Koinzidenzwahrscheinlichkeiten das
-Potenzial haben, irgendeine Form von Bedeutung zu kodieren. Nehmen wir
-das Beispiel aus StanfordNLP (Global Vectors for Word Representation),
-um die Ko-Vorkommenswahrscheinlichkeiten für die Zielwörter Eis und
-Dampf mit verschiedenen Probewörtern aus dem Vokabular zu betrachten:
-
-``Wie zu erwarten ist, tritt Eis häufiger mit Festkörpern als mit Gas
-auf, während Dampf häufiger mit Gas als mit Festkörpern auftritt. Beide
-Wörter kommen häufig zusammen mit ihrer gemeinsamen Eigenschaft Wasser
-vor, und beide kommen selten zusammen mit dem nicht verwandten Wort Mode
-vor. Nur im Verhältnis der Wahrscheinlichkeiten heben sich Geräusche von
-nicht diskriminierenden Wörtern wie Wasser und Mode auf, so dass große
-Werte (viel größer als 1) gut mit eisspezifischen Eigenschaften und
-kleine Werte (viel kleiner als 1) gut mit dampfspezifischen
-Eigenschaften korrelieren.'' Word2Vec arbeitet jedoch mit den reinen
-Koinzidenzwahrscheinlichkeiten, so dass die Wahrscheinlichkeit, dass die
-das Zielwort umgebenden Wörter den Kontext bilden, maximiert wird.
-
-In der Praxis setzt Word2Vec zur Beschleunigung des Trainingsprozesses
-negative Abtastung ein, um die Softmax-Funktion durch die
-Sigmoid-Funktion zu ersetzen, die mit den realen Daten und den
-Rauschdaten arbeitet. Dies führt emplizit zu einer Clusterung von
-Wörtern zu einem Kegel im Vektorraum, während die Wortvektoren von GloVe
-diskreter angeordnet sind. Übersetzt mit www.DeepL.com/Translator
-(kostenlose Version)
+    \begin{Verbatim}[commandchars=\\\{\}]
+'smartphones': tensor([-0.2138, -0.3245,  0.2806]) (Vektorlänge: 100)
+'have': tensor([0.1571, 0.6561, 0.0021]) (Vektorlänge: 100)
+'a': tensor([-0.2709,  0.0440, -0.0203]) (Vektorlänge: 100)
+'touchscreen': tensor([-0.7974,  0.1240,  0.7148]) (Vektorlänge: 100)
+    \end{Verbatim}
 
     \hypertarget{fasttext}{%
 \subsection{FastText}\label{fasttext}}
 
-TODO
+\textbf{Word2Vec} und \textbf{GloVe} haben Probleme damit, unbekannte
+Wörter zu verarbeiten. Dieser Fehler nennt sich \textbf{out of
+vocabulary} (\textbf{OOV}), da das Wort nicht im bekannten Vokabular der
+Embeddings vorkommt. Es ist zwar möglich, unbekannten Wörtern ein
+zufälliges Embedding zuzuweisen, jedoch ist dies vor allem
+problematisch, wenn das unbekannte Wort ein Schlüsselwort im
+untersuchten Text ist. Eine Embedding Verfahren, welches das OOV Problem
+löst, ist \textbf{FastText}, welches 2016 von Bojanowski et.
+al.~veröffentlicht wurde
+(\href{https://arxiv.org/abs/1607.04606}{Paper}). FastText löst das
+OOV-Problem, indem es Wörter mithilfe von Buchstaben N-Grammen in
+einzelne Teilwörter aufteilt. Während des Trainings lernt FastText die
+Buchstaben N-Gramme der Teilwörter. Bei einem unbekannten Wort wird ein
+Embedding dieses Wortes erzeugt, indem der Mittelwert der
+Vektorrepräsentationen der verschiedenen Buchstaben N-Gramm-Embeddings
+gebildet wird. Zwar kann FastText so mit unbekannten Wörtern umgehen,
+eine optimale Lösung für das Problem ist dies jedoch nicht, da Wörter
+zwar aus ähnlichen Buchstaben N-Gramm-Bestandteilen bestehen, sich aber
+semantisch trotzdem stark voneinander unterscheiden können.
+
+Im Folgenden wird die Funktionsweise von FastText-Embeddings anhand
+eines Beispielsatzes demonstriert. Wie bei den GloVe-Embeddings auch
+wird hier die Bibliothek \textbf{Flair} verwendet. Der folgende Code
+erzeugt sowohl für das FastText-Embedding als auch für das
+GloVe-Embedding einen OOV-Fehler für das Wort ``tensorflow'',
+dargestellt durch einen Wortvektor, der nur aus Nullen besteht.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{string2} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{tensorflow is a library}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{sentence2} \PY{o}{=} \PY{n}{Sentence}\PY{p}{(}\PY{n}{string2}\PY{p}{,} \PY{n}{use\PYZus{}tokenizer}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{sentence3} \PY{o}{=} \PY{n}{Sentence}\PY{p}{(}\PY{n}{string2}\PY{p}{,} \PY{n}{use\PYZus{}tokenizer}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{glove\PYZus{}embedding2} \PY{o}{=} \PY{n}{WordEmbeddings}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{glove}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{embed}\PY{p}{(}\PY{n}{sentence2}\PY{p}{)}
+\PY{n}{fasttext\PYZus{}embedding2} \PY{o}{=} \PY{n}{WordEmbeddings}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{en}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{embed}\PY{p}{(}\PY{n}{sentence3}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{token1}\PY{p}{,} \PY{n}{token2} \PY{o+ow}{in} \PY{n+nb}{zip}\PY{p}{(}\PY{n}{sentence2}\PY{p}{,} \PY{n}{sentence3}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{[GloVe] }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{token1}\PY{o}{.}\PY{n}{text}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{: }\PY{l+s+si}{\PYZob{}}\PY{n}{token1}\PY{o}{.}\PY{n}{embedding}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{3}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+}
+          \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{(Vektorlänge: }\PY{l+s+si}{\PYZob{}}\PY{n+nb}{len}\PY{p}{(}\PY{n}{token1}\PY{o}{.}\PY{n}{embedding}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{[FastText] }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{token2}\PY{o}{.}\PY{n}{text}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{: }\PY{l+s+si}{\PYZob{}}\PY{n}{token2}\PY{o}{.}\PY{n}{embedding}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{3}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+}
+          \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{(Vektorlänge: }\PY{l+s+si}{\PYZob{}}\PY{n+nb}{len}\PY{p}{(}\PY{n}{token2}\PY{o}{.}\PY{n}{embedding}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{k}{break}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+[GloVe] 'tensorflow': tensor([0., 0., 0.]) (Vektorlänge: 100)
+[FastText] 'tensorflow': tensor([0., 0., 0.]) (Vektorlänge: 300)
+    \end{Verbatim}
+
+    Um keinen OOV-Fehler zu erzeugen, muss anstatt der Klasse
+\texttt{WordEmbeddings} die Klasse \texttt{FastTextEmbeddings} in
+Kombination mit einem selbst heruntergeladen englischen Model verwendet
+werden (\href{https://fasttext.cc/docs/en/pretrained-vectors.html}{Link
+zum Modell}). Nun kann das Wort ``tensorflow'' dargestellt
+werden.Section \ref{fn4}
+
+\hypertarget{fn4}{}
+4 ~Da die FastText-Embeddings sehr groß sind, wurden die Wortvektoren
+extern berechnet, hier werden nur die Ergebnisse angezeigt.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{67}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} sentence4 = Sentence(string2, use\PYZus{}tokenizer=True)}
+\PY{c+c1}{\PYZsh{} fasttext\PYZus{}embedding = FastTextEmbeddings(\PYZsq{}cc.en.300.bin\PYZsq{}).embed(sentence4)}
+\PY{k}{with} \PY{n+nb}{open}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{fasttext.json}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{r}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)} \PY{k}{as} \PY{n}{f}\PY{p}{:}
+    \PY{n}{sentence4\PYZus{}worddict} \PY{o}{=} \PY{n}{json}\PY{o}{.}\PY{n}{load}\PY{p}{(}\PY{n}{f}\PY{p}{)}
+    \PY{k}{for} \PY{n}{k}\PY{p}{,} \PY{n}{v} \PY{o+ow}{in} \PY{n}{sentence4\PYZus{}worddict}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{k}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{: }\PY{l+s+si}{\PYZob{}}\PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{torch}\PY{o}{.}\PY{n}{tensor}\PY{p}{(}\PY{n}{v}\PY{p}{)}\PY{p}{,} \PY{n}{decimals}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+'tensorflow': tensor([-0.0790, -0.0390,  0.0030])
+'is': tensor([-0.0980, -0.2080, -0.1040])
+'a': tensor([ 0.0880, -0.4960, -0.0500])
+'library': tensor([ 0.0000,  0.0320, -0.0270])
+    \end{Verbatim}
+
+    \hypertarget{contextualised-word-embeddings}{%
+\section{Contextualised word
+embeddings}\label{contextualised-word-embeddings}}
+
+\hypertarget{allgemeines}{%
+\subsection{Allgemeines}\label{allgemeines}}
+
+Seit ihrer Einführung wurden vortrainierte Word Embeddings als
+bevorzugte Vektorisierungsmethode für Neuronale Netze verwendet. Word
+Embeddings wie Word2Vec, GloVe oder FastText haben jedoch das Problem,
+dass sie \textbf{statische} Wortrepräsentationen liefern. Das Embedding
+eines Wortes ist immer gleich, egal in welchem Kontext es auftaucht.
+
+\texttt{Ich\ sitze\ auf\ der\ Bank.}
+
+\texttt{Ich\ hole\ Geld\ von\ der\ Bank.}
+
+Betrachtet man die beiden Beispielsätze, hat das Wort ``Bank'' eine
+unterschiedliche Bedeutung (Sitzgelegenheit/Möbelstück und
+Kreditinstitut), wird von den statischen Word Embeddings aber als
+gleicher Wortvektor aufgefasst. Statische Word Embeddings haben zwei
+Limitierungen:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Die Bedeutung eines Wortes, die sich durch den Kontext ergibt, wird
+  ignoriert.
+\item
+  Semantische Phänomene wie langfristige Abhängigkeiten oder die
+  Kompositionalität eines Satzes bleiben unberücksichtigt.
+\end{enumerate}
+
+Eine Lösung bieten die in den letzten Jahren veröffentlichten
+\textbf{contextualised word embeddings} wie \textbf{ELMo} oder
+\textbf{BERT}. Diese Word Embeddings bieten eine \textbf{dynamische}
+Wortrepräsentation, sodass Worte, die die gleiche Schreibweise besitzen,
+durch unterschiedliche Vektoren dargestellt werden können, je nachdem in
+welchem Kontext sie sich befinden oder in welcher Reihenfolge sie
+vorkommen.
+
+\textbf{Contextualised word embeddings} unterscheiden sich von den
+statischen Word Embeddings ebenfalls in der Hinsicht, dass das Modell,
+mit denen die Embeddings trainiert wurden, für weitere Anwendungen der
+Embeddings verwendet werden muss. Möchte man beispielsweise ein
+Neuronales Netz trainieren, reicht es bei statischen Word Embeddings,
+lediglich die Wortvektoren in einem Embedding Layer zu verwenden. Bei
+den kontextualisierten Word Embeddings wird zusätzlich das Modell
+benötigt, da diese den Wortvektor anhand der umliegenden Wörter
+erstellen. Dies wird durch die folgende Grafik deutlich:
+
+\includegraphics{img/difference_embeddings.png}
+
+Die Grafik wurde von dieser
+\href{https://www.quora.com/What-were-the-most-significant-Natural-Language-Processing-advances-in-2018/answer/Ajit-Rajasekharan}{Webseite}
+entnommen.
 
     \hypertarget{elmo}{%
 \subsection{ELMo}\label{elmo}}
 
-TODO
+\textbf{ELMo} (= Embeddings from Language Models) wurde Anfang 2018 von
+Peters et. al.~veröffentlicht
+(\href{https://arxiv.org/abs/1802.05365}{Paper}). Für das Training von
+Embeddings verwendet ELMo ein \textbf{tiefes bidirektionales LSTM
+Language Model}. Language Models werden dazu verwendet, anhand von
+vorangegangen Wörtern das nächste Wort in einem Satz vorauszusagen. Dazu
+müssen Language Models sowohl die semantischen als auch die
+syntaktischen Eigenschaften von Wörtern kodieren, welches sie zu
+geeignten Modellen für die Darstellung von Wörtern macht. Die
+Bidirektionalität erlaubt es ELMo, nicht nur vorhergehende Wörter,
+sondern auch nachfolgende Wörter für die Vorausage eines Wortes zu
+verwenden. ELMo agiert beim Training nicht auf der Wortebene, sondern
+verwendet ähnlich wie FastText Buchstabenvektoren, womit Wörter unter
+Benutzung eines Lernmodells oder der Mittelwertsbildung der Wortvektoren
+gebaut und das OOV-Problem umgangen werden kann. Trotzdem sind die
+ausgegeben Vektoren letztendlich Wortvektoren und keine Buchstaben- oder
+Teilwortvektoren.
+
+Im Folgenden wird anhand eines Beispielsatzes die Funktionsweise der
+ELMo-Embedding mithilfe der Bibliothek \textbf{Flair} demonstriert. Beim
+Beispielsatz hat das Wort ``apple'' mehrere Bedeutungen, einmal ist das
+Unternehmen gemeint und einmal die Frucht. Vergleicht man die beiden
+Vektoren, erkennt man, dass diese durch unterschiedliche Vektoren
+dargestellt werden. Anders als bei vorherigen Embedding-Verfahren wird
+die Mehrdeutigkeit also dargestellt.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{69}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sentence5} \PY{o}{=} \PY{n}{Sentence}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{apple is a company but an apple is also a fruit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ELMoEmbeddings}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{original}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{o}{.}\PY{n}{embed}\PY{p}{(}\PY{n}{sentence5}\PY{p}{)}
+
+\PY{n}{elmo\PYZus{}tensors} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+\PY{k}{for} \PY{n}{token} \PY{o+ow}{in} \PY{n}{sentence5}\PY{p}{:}
+    \PY{k}{if} \PY{n}{token}\PY{o}{.}\PY{n}{text} \PY{o}{==} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{apple}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}
+        \PY{n}{elmo\PYZus{}tensors}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{token}\PY{o}{.}\PY{n}{embedding}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{token}\PY{o}{.}\PY{n}{text}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{: }\PY{l+s+si}{\PYZob{}}\PY{n}{token}\PY{o}{.}\PY{n}{embedding}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{3}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+}
+          \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{(Vektorlänge: }\PY{l+s+si}{\PYZob{}}\PY{n+nb}{len}\PY{p}{(}\PY{n}{token}\PY{o}{.}\PY{n}{embedding}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+'apple': tensor([0.1444, 0.0678, 0.3774]) (Vektorlänge: 3072)
+'is': tensor([ 0.1915,  0.2300, -0.2894]) (Vektorlänge: 3072)
+'a': tensor([ 0.1040,  0.1229, -0.0706]) (Vektorlänge: 3072)
+'company': tensor([ 0.6496,  0.0804, -0.5390]) (Vektorlänge: 3072)
+'but': tensor([-0.2404, -0.2742, -0.2190]) (Vektorlänge: 3072)
+'an': tensor([ 0.0797,  0.1992, -0.0695]) (Vektorlänge: 3072)
+'apple': tensor([0.1444, 0.0678, 0.3774]) (Vektorlänge: 3072)
+'is': tensor([ 0.1915,  0.2300, -0.2894]) (Vektorlänge: 3072)
+'also': tensor([ 0.8475, -0.2688,  0.2739]) (Vektorlänge: 3072)
+'a': tensor([ 0.1040,  0.1229, -0.0706]) (Vektorlänge: 3072)
+'fruit': tensor([-0.5279,  0.3975,  0.8766]) (Vektorlänge: 3072)
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{70}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{diff} \PY{o}{=} \PY{n}{elmo\PYZus{}tensors}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{elmo\PYZus{}tensors}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Die Vektoren der beiden unterschiedlichen Bedeutungen }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+}
+      \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{von }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{apple}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ unterscheiden sich bei ELMo in }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+}
+      \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n+nb}{len}\PY{p}{(}\PY{p}{[}\PY{n}{i} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{diff}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{i} \PY{o}{!=} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ von 3072 Stellen.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Die Vektoren der beiden unterschiedlichen Bedeutungen von 'apple' unterscheiden
+sich bei ELMo in 2045 von 3072 Stellen.
+    \end{Verbatim}
 
     \hypertarget{bert}{%
 \subsection{BERT}\label{bert}}
 
-BERT steht für ``Bidirectional Encoder Representations from
-Transformers'' und brach bei seiner Veröffentlichung 2018 eine ganze
-Reihe von Rekorden für Aufgaben des Natural Language Processing.
+\textbf{BERT} (= Bidirectional Encoder Representations from
+Transformers) gehört wie \textbf{ELMo} zu den \textbf{contextualised
+word embeddings} und wurde Ende 2018 von Devlin et. al.~veröffentlicht
+(\href{https://arxiv.org/abs/1810.04805}{Paper}). BERT baut auf der
+bidirektionalen Idee von ELMo auf, verwendet anstatt einem LSTM-Modell
+jedoch ein \textbf{Transformers}-Modell um die Embeddings zu berechnen.
+Beim Training verwendete BERT den sogenannten
+\textbf{Attention}-Mechanismus des \textbf{Transformers}-Modell, der es
+erlaubt, relevanten Worten in einer Sequenz mehr Bedeutung als anderen
+Worten zuzuschreiben. Anders als vorhergehende Implementierungen des
+Attention-Mechanismus verwendete BERT anstatt eines unidirektionalen
+einen \textbf{bidirektionalen} Ansatz, bei dem nicht nur nachfolgende,
+sondern auch vorhergehende Wörter betrachtet wurden. Der bidirektionale
+Ansatz ist jedoch in dem Sinne problematisch, dass er Wörtern erlaubt,
+sich indirekt ``selbst zu sehen'', wodurch das Modell in der Lage wäre,
+das Zielwort relativ einfach vorauszusagen.
+
+Zur Lösung dieses Problems benutzte BERT die Konzepte \textbf{Next
+Sentence Prediction} und \textbf{Masked Language Modeling}. Bei der
+\textbf{Next Sentence Prediction} (NSP) prüft BERT, ob ein nachfolgender
+Satz kontextuell zum vorherigen Satz passt. Das \textbf{Masked Language
+Modeling} (MLM) ist eine spezielle Form des Language Modelings. Dabei
+werden zufällig 15\% der Wörter in jedem Satz der Trainingsdaten
+ausgewählt, von denen wiederum 80\% durch ein spezielles
+Maskierungstoken ausgetauscht, 10\% durch ein zufälliges Wort aus dem
+Vokabular des Korpus ersetzt und 10\% der Wörter nicht verändert werden.
+BERT versuchte dann im Training, die ausgewählten Tokens vorauszusagen,
+wozu es die umliegenden, nicht maskierten Wörter verwendete. Dadurch
+berücksichtigen die gelernten Gewichte anders als Word2Vec oder GloVe
+den Kontext eines Wortes, was es BERT erlaubt, zwischen mehrdeutigen
+Wörtern zu unterscheiden. Um das OOV-Problem zu umgehen, verwendete BERT
+ähnlich wie FastText keine ganzen Wörter, sondern Teilwörter, mithilfe
+derer verschiedene Wörter zusammengebaut werden können.
+
+Im Folgenden wird anhand eines Beispielsatzes die Funktionsweise der
+BERT-Embedding mithilfe der Bibliothek \textbf{Flair} demonstriert. Beim
+Beispielsatz hat das Wort ``apple'' mehrere Bedeutungen, einmal ist das
+Unternehmen gemeint und einmal die Frucht. Vergleicht man die beiden
+Vektoren, erkennt man, dass diese durch unterschiedliche Vektoren
+dargestellt werden. Anders als noch bei ELMo unterscheiden sich diese
+Vektoren vollends voneinander, sie haben keine gemeinsamen Stellen.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sentence6} \PY{o}{=} \PY{n}{Sentence}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{apple is a company but an apple is also a fruit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{BertEmbeddings}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{embed}\PY{p}{(}\PY{n}{sentence6}\PY{p}{)}
+
+\PY{n}{bert\PYZus{}tensors} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+\PY{k}{for} \PY{n}{token} \PY{o+ow}{in} \PY{n}{sentence6}\PY{p}{:}
+    \PY{k}{if} \PY{n}{token}\PY{o}{.}\PY{n}{text} \PY{o}{==} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{apple}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}
+        \PY{n}{bert\PYZus{}tensors}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{token}\PY{o}{.}\PY{n}{embedding}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{token}\PY{o}{.}\PY{n}{text}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{: }\PY{l+s+si}{\PYZob{}}\PY{n}{token}\PY{o}{.}\PY{n}{embedding}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{3}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+}
+          \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{(Vektorlänge: }\PY{l+s+si}{\PYZob{}}\PY{n+nb}{len}\PY{p}{(}\PY{n}{token}\PY{o}{.}\PY{n}{embedding}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+'apple': tensor([ 0.3007,  0.4433, -0.2990]) (Vektorlänge: 3072)
+'is': tensor([-0.1345, -0.1533, -0.1418]) (Vektorlänge: 3072)
+'a': tensor([-0.0250, -0.0645,  0.1348]) (Vektorlänge: 3072)
+'company': tensor([ 0.2446, -0.1140,  0.0695]) (Vektorlänge: 3072)
+'but': tensor([-0.2657, -0.2901,  0.1341]) (Vektorlänge: 3072)
+'an': tensor([-0.1693,  1.0000, -0.0986]) (Vektorlänge: 3072)
+'apple': tensor([ 0.0220,  0.8081, -0.1181]) (Vektorlänge: 3072)
+'is': tensor([-0.3891,  0.3975,  0.1520]) (Vektorlänge: 3072)
+'also': tensor([-0.7347, -0.0557, -0.2733]) (Vektorlänge: 3072)
+'a': tensor([-0.1067,  0.3567,  0.2085]) (Vektorlänge: 3072)
+'fruit': tensor([-0.1865,  0.4674, -0.2058]) (Vektorlänge: 3072)
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{diff} \PY{o}{=} \PY{n}{bert\PYZus{}tensors}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{bert\PYZus{}tensors}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Die Vektoren der beiden unterschiedlichen Bedeutungen }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+}
+      \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{von }\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{apple}\PY{l+s+s2}{\PYZsq{}}\PY{l+s+s2}{ unterscheiden sich bei BERT in }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+}
+      \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n+nb}{len}\PY{p}{(}\PY{p}{[}\PY{n}{i} \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{diff}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)} \PY{k}{if} \PY{n}{i} \PY{o}{!=} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ von 3072 Stellen.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Die Vektoren der beiden unterschiedlichen Bedeutungen von 'apple' unterscheiden
+sich bei BERT in 3072 von 3072 Stellen.
+    \end{Verbatim}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{ }{\boxspacing}
