@@ -1,17 +1,24 @@
-import pandas as pd
-
-import re, string, unicodedata
-import nltk
-import contractions
 from bs4 import BeautifulSoup
+import contractions
+import gensim
+import matplotlib.pyplot as plt
+
+import nltk
 from nltk import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
 from nltk.stem.lancaster import LancasterStemmer
 from nltk.stem import WordNetLemmatizer
 
-import gensim  
+import pandas as pd
+import re, string, unicodedata
+
 from sklearn.manifold import TSNE
-import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+
+import time
+import torch
+
+
 
 # =================== #
 # corpus modification #
@@ -93,3 +100,60 @@ def random_downsampling(corpus, class_col = "rating", max_value = 300000):
 	corpus_5 = corpus_5.sample(max_value)
 
 	return pd.concat([corpus_1, corpus_2, corpus_3, corpus_4, corpus_5], axis=0)
+
+# ======================= #
+# neural network training #
+# ======================= #
+
+def df_to_jsonl(df, filename, text_col="review", output_path="../corpora/splits/"):
+	""" DataFrame with text column to Json Line Format. """
+
+	df[text_col] = df.apply(lambda row: word_tokenize(row[text_col]), axis=1)
+	df.to_json(f"{output_path}{filename}.json", orient='records', lines=True)
+
+def split_corpus(corpus, 
+				 text_col = "review", 
+				 label_col = "rating", 
+				 split = 0.8,
+				 output_path = "../corpora/splits/"):
+	""" Splits corpus in Train, Val and Test set and saves them 
+		as jsonl files.
+	"""
+	
+	X_train, X_remain = train_test_split(corpus, 
+										 train_size=split,
+										 stratify=corpus[label_col])
+
+	val_test_split = int((corpus.shape[0] * 0.2)/2)
+	X_val = X_remain[:val_test_split]
+	X_test = X_remain[val_test_split:]
+
+
+
+	df_to_jsonl(X_train, "train", text_col = text_col, output_path = output_path)
+	df_to_jsonl(X_val, "val")
+	df_to_jsonl(X_test, "test")
+
+
+def categorical_accuracy(preds, y):
+	""" Returns accuracy per batch. """
+	max_preds = preds.argmax(dim = 1, keepdim = True) # get the index of the max probability
+	correct = max_preds.squeeze(1).eq(y)
+	return correct.sum() / torch.FloatTensor([y.shape[0]])
+
+
+def epoch_time(start_time, end_time):
+	elapsed_time = end_time - start_time
+	elapsed_mins = int(elapsed_time / 60)
+	elapsed_secs = int(elapsed_time - (elapsed_mins * 60))
+	return elapsed_mins, elapsed_secs
+
+
+
+
+
+
+
+
+
+
