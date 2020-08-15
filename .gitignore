@@ -131,8 +131,12 @@ dmypy.json
 
 # my own ignores
 
-corpora/
+corpora/old/
 app/german_model.bin
 app/cc.en.300.bin
 app/old/
+app/book/
+app/examples/
+app/.vector_cache/
+app/savefiles/
 
