@@ -10,6 +10,7 @@ from nltk import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
 from nltk.stem.lancaster import LancasterStemmer
 from nltk.stem import WordNetLemmatizer
+import numpy as np
 
 import pandas as pd
 import re, string, unicodedata
