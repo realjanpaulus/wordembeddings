@@ -107,6 +107,13 @@ def random_downsampling(corpus, class_col = "rating", max_value = 300000):
 # neural network training #
 # ======================= #
 
+def flat_f1(true_labels, preds):
+	""" Flattens predictions and labels and omputes macro f1-score.
+	"""
+	pred_flat = np.argmax(preds, axis=1).flatten()
+	labels_flat = true_labels.flatten()
+	return f1_score(labels_flat, pred_flat, average="macro")
+
 def load_jsonl_to_df(path):
 	""" Create dataframe from a JSON lines file. """
 	data = []
