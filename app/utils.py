@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import contractions
+import datetime
 import gensim
+import json
 import matplotlib.pyplot as plt
 
 import nltk
@@ -105,11 +107,28 @@ def random_downsampling(corpus, class_col = "rating", max_value = 300000):
 # neural network training #
 # ======================= #
 
+def load_jsonl_to_df(path):
+	""" Create dataframe from a JSON lines file. """
+	data = []
+	with open(path, 'r', encoding='utf-8') as f:
+		for line in f:
+			data.append(json.loads(line.rstrip('\n|\r')))
+	df = pd.DataFrame(data)
+	if type(df["review"][0]) == list:
+		df["review"] = df.review.apply(" ".join)
+	return df
+
 def df_to_jsonl(df, filename, text_col="review", output_path="../corpora/splits/"):
 	""" DataFrame with text column to Json Line Format. """
 
 	df[text_col] = df.apply(lambda row: word_tokenize(row[text_col]), axis=1)
 	df.to_json(f"{output_path}{filename}.json", orient='records', lines=True)
+
+def format_time(elapsed):
+	""" Takes a time in seconds and returns a string hh:mm:ss
+	"""
+	elapsed_rounded = int(round((elapsed)))
+	return str(datetime.timedelta(seconds=elapsed_rounded))
 
 def split_corpus(corpus, 
 				 text_col = "review", 

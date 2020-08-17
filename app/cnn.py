@@ -152,6 +152,13 @@ def main():
 	CRITERION = nn.CrossEntropyLoss()
 
 
+	# for pt model
+	output_add = f'_e{EPOCHS}_bs{BATCH_SIZE}_mf{MAX_VOCAB_SIZE}_emb{EMBEDDING_NAME}'
+	output_file = f'savefiles/cnnmodel{output_add}.pt'
+
+	if args.load_savefile:
+		model = torch.load(output_file)
+	
 
 	# load embeddings
 	pretrained_embeddings = REVIEW.vocab.vectors 
@@ -174,7 +181,7 @@ def main():
 		epoch_loss = 0
 		epoch_acc = 0
 		
-		model.train()
+		model.train() 
 		
 		for batch in iterator:
 			
@@ -220,9 +227,6 @@ def main():
 
 	best_valid_loss = float('inf')
 
-	# for pt model
-	output_add = f'_e{EPOCHS}_bs{BATCH_SIZE}_mf{MAX_VOCAB_SIZE}_emb{EMBEDDING_NAME}'
-	output_file = f'savefiles/cnnmodel{output_add}.pt'
 
 	for epoch in range(EPOCHS):
 
@@ -261,6 +265,7 @@ if __name__ == "__main__":
 	parser.add_argument("--epochs", "-e", type=int, default=10, help="Indicates number of epochs.")
 	#TODO: wird das genutzt?
 	parser.add_argument("--learning_rate", "-lr", type=float, default=2e-5, help="Set learning rate for optimizer.")
+	parser.add_argument("--load_savefile", "-lsf", action="store_true", help="Loads savefile as input NN.")
 	parser.add_argument("--max_features", "-mf", type=int, default=25000, help="Set the maximum size of vocabulary.")
 	parser.add_argument("--save_date", "-sd", action="store_true", help="Indicates if the creation date of the results should be saved.")
 	
