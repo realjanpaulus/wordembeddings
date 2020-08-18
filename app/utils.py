@@ -1,7 +1,10 @@
 from bs4 import BeautifulSoup
 import contractions
+from collections import defaultdict
 import datetime
 import gensim
+import glob
+import io
 import json
 import matplotlib.pyplot as plt
 
@@ -14,14 +17,17 @@ import numpy as np
 
 import pandas as pd
 import re, string, unicodedata
+from scipy.sparse import csr_matrix
 
 from sklearn.manifold import TSNE
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score 
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 import time
 import torch
-
+from typing import Dict, List, Optional, Tuple, Union
 
 
 # =================== #
@@ -109,12 +115,34 @@ def random_downsampling(corpus, class_col = "rating", max_value = 300000):
 # neural network training #
 # ======================= #
 
+def early_stopping(d, patience=2):
+	""" Implements Early stopping.
+	"""
+	if len(d) <= 1:
+		return False
+	elif len(d) > 1:
+		comparisons = []
+		for epoch in range(1, len(d)+1):
+			if epoch > 1:
+				comparisons.append(d[f"epoch{epoch}"] >= d[f"epoch{epoch-1}"])
+		if False not in comparisons[-patience:] and len(comparisons) > patience:
+			return True
+		else:
+			return False
+
 def flat_f1(true_labels, preds):
 	""" Flattens predictions and labels and omputes macro f1-score.
 	"""
 	pred_flat = np.argmax(preds, axis=1).flatten()
 	labels_flat = true_labels.flatten()
 	return f1_score(labels_flat, pred_flat, average="macro")
+
+
+def format_time(elapsed):
+	""" Takes a time in seconds and returns a string hh:mm:ss
+	"""
+	elapsed_rounded = int(round((elapsed)))
+	return str(datetime.timedelta(seconds=elapsed_rounded))
 
 def load_jsonl_to_df(path):
 	""" Create dataframe from a JSON lines file. """
