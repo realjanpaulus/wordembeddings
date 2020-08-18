@@ -17,6 +17,7 @@ import re, string, unicodedata
 
 from sklearn.manifold import TSNE
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score 
 
 import time
 import torch
