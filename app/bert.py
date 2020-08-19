@@ -301,6 +301,10 @@ def main():
 
 
 
+	logging.info(train_losses)
+	logging.info(val_losses)
+	logging.info(type(train_losses))
+	logging.info(type(val_losses))
 
 	plt.plot(train_losses, label="Training loss")
 	plt.plot(val_losses, label="Validation loss")
