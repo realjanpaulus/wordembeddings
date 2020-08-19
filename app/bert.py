@@ -189,14 +189,17 @@ def main():
 	total_t0 = time.time()
 
 	validation_losses = {}
+	train_losses, val_losses = [], []
 
 	for epoch_i in range(0, epochs):
 		print("")
 		print('======== Epoch {:} / {:} ========'.format(epoch_i + 1, epochs))
 		print('Now Training.')
+
 		t0 = time.time()
 		total_train_loss = 0
 		model.train()
+
 		for step, batch in enumerate(train_dataloader):
 			if step % 50 == 0 and not step == 0:
 				elapsed = utils.format_time(time.time() - t0)
@@ -220,7 +223,8 @@ def main():
 			scheduler.step()
 
 		# average loss (all batches)
-		avg_train_loss = total_train_loss / len(train_dataloader)   
+		avg_train_loss = total_train_loss / len(train_dataloader)
+		train_losses.append(avg_train_loss)   
 		training_time = utils.format_time(time.time() - t0)
 
 		print("")
@@ -269,6 +273,7 @@ def main():
 		print("  Validation Accuracy: {0:.2f}".format(avg_val_accuracy))
 		
 		avg_val_loss = total_eval_loss / len(val_dataloader)
+		val_losses.append(avg_val_loss)
 		validation_time = utils.format_time(time.time() - t0)
 		print("  Validation Loss: {0:.2f}".format(avg_val_loss))
 		print("  Validation took: {:}".format(validation_time))
@@ -293,6 +298,14 @@ def main():
 			logging.info(f"Stopping epoch run early (Epoch {epoch_i}).")
 			break
 
+
+
+
+	plt.plot(train_losses, label="Training loss")
+	plt.plot(val_losses, label="Validation loss")
+	plt.legend()
+	plt.title("Losses")
+	plt.savefig(f"../results/bert_loss_e{args.epochs}.png")
 
 	logging.info(f"Training for {class_name} done.")
 	logging.info("Training took {:} (h:mm:ss) \n".format(utils.format_time(time.time()-total_t0)))
