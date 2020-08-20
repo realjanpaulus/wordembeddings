@@ -299,13 +299,6 @@ def main():
 			logging.info(f"Stopping epoch run early (Epoch {epoch_i}).")
 			break
 
-
-
-	logging.info(train_losses)
-	logging.info(val_losses)
-	logging.info(type(train_losses))
-	logging.info(type(val_losses))
-
 	plt.plot(train_losses, label="Training loss")
 	plt.plot(val_losses, label="Validation loss")
 	plt.legend()
@@ -392,6 +385,10 @@ def main():
 	logging.info("Training took {:} (h:mm:ss)".format(utils.format_time(time.time()-total_t0)))
 	print("________________________________")
 	print("________________________________\n")
+
+
+	program_duration = float(time.time() - program_st)
+	logging.info(f"Total duration: {int(program_duration)/60} minute(s).")
 
 
 if __name__ == "__main__":

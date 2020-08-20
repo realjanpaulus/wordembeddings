@@ -176,19 +176,19 @@ def split_corpus(corpus,
 		as jsonl files.
 	"""
 	
-	X_train, X_remain = train_test_split(corpus, 
-										 train_size=split,
-										 stratify=corpus[label_col])
+	train, remain = train_test_split(corpus, 
+									 train_size=split,
+									 stratify=corpus[label_col])
 
-	val_test_split = int(X_remain.shape[0] /2)
-	X_val = X_remain[:val_test_split]
-	X_test = X_remain[val_test_split:]
+	val_test_split = int(remain.shape[0] /2)
+	val = remain[:val_test_split]
+	test = remain[val_test_split:]
 
 
 
-	df_to_jsonl(X_train, "train", text_col = text_col, output_path = output_path)
-	df_to_jsonl(X_val, "val", text_col = text_col, output_path = output_path)
-	df_to_jsonl(X_test, "test", text_col = text_col, output_path = output_path)
+	df_to_jsonl(train, "train", text_col = text_col, output_path = output_path)
+	df_to_jsonl(val, "val", text_col = text_col, output_path = output_path)
+	df_to_jsonl(test, "test", text_col = text_col, output_path = output_path)
 
 
 def categorical_accuracy(preds, y):
