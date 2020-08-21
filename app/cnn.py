@@ -21,8 +21,6 @@ def train(args, data, vectors):
 	"""
 	if args.model == "kimcnn":
 		model = KimCNN(args, data, vectors)
-		print(model)
-		exit() #TODO
 	model.to(torch.device(args.device))
 
 	parameters = filter(lambda p: p.requires_grad, model.parameters())
