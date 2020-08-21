@@ -132,6 +132,7 @@ dmypy.json
 # my own ignores
 
 corpora/old/
+app/embeddings/
 app/german_model.bin
 app/cc.en.300.bin
 app/old/
