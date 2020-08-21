@@ -127,6 +127,8 @@ def main():
 	print(f"Loading the '{args.dataset}' dataset.")
 
 	data = DATA(args)
+
+	
 	""" TODO: weiter
 	TEXT = data.Field(batch_first=True, lower=True, fix_length=500)
 	LABEL = data.LabelField()

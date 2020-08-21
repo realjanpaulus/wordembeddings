@@ -15,7 +15,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils import data
-from torchtext import data, datasets
+#from torchtext import data, datasets
 
 
 class SimpleCNN(nn.Module):
