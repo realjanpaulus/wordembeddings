@@ -56,7 +56,7 @@ class KimCNN(nn.Module):
 			x = x.permute(1, 0)
 			x = self.embedding(x) 
 
-		print("\n bis hierhin \n") #todo 
+		#print("\n bis hierhin \n") #todo 
 		x = x.unsqueeze(1)
 		x = [F.relu(conv(x)).squeeze(3) for conv in self.convs]
 
