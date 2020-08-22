@@ -267,7 +267,7 @@ def main():
 				predictions = model(batch.text).squeeze(1)
 			else:
 				predictions = model(batch.text)
-			loss = criterion(predictions[0], batch.label)
+			loss = criterion(predictions, batch.label)
 			acc = categorical_accuracy(predictions, batch.label)
 			loss.backward()
 			optimizer.step()

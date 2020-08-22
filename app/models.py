@@ -54,7 +54,7 @@ class KimCNN(nn.Module):
 				print("xsize2: ", x.size())
 		else:
 			x = x.permute(1, 0)
-			x = self.embedding(x)  
+		x = self.embedding(x)  
 		x = x.unsqueeze(1)
 		x = [F.relu(conv(x)).squeeze(3) for conv in self.convs]
 
