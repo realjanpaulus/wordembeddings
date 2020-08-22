@@ -65,7 +65,7 @@ def main():
 	DATA_PATH = args.datapath
 	DROPOUT = 0.5
 	EPOCHS = args.epochs
-	
+
 	FILTER_SIZES = [3,4,5]
 	LEARNING_RATE = args.learning_rate
 	MAX_VOCAB_SIZE = args.max_features
@@ -122,6 +122,8 @@ def main():
 						  lower=True)
 
 
+		INPUT_DIM = max_input_length
+
 	else:
 		TEXT = data.Field(tokenize = "toktok",
 						  lower = True)
@@ -140,15 +142,12 @@ def main():
 																 skip_header = True)
 
 
-	if EMBEDDING_TYPE == "bert":
-		INPUT_DIM = max_input_length
-	else:
+	if EMBEDDING_TYPE != "bert":
 		TEXT.build_vocab(train_data, 
 						 vectors = EMBEDDING_NAME, 
 						 unk_init = torch.Tensor.normal_,
 						 max_size = MAX_VOCAB_SIZE)
-		
-
+	
 		INPUT_DIM = len(TEXT.vocab)
 		
 
@@ -156,8 +155,6 @@ def main():
 	OUTPUT_DIM = len(LABEL.vocab)
 
 	
-
-
 	if torch.cuda.is_available():       
 		device = torch.device("cuda")
 		logging.info(f'There are {torch.cuda.device_count()} GPU(s) available.')
@@ -220,9 +217,7 @@ def main():
 							  class_num=5, #TODO!
 							  kernel_num=3, #TODO!
 							  kernel_sizes=FILTER_SIZES,
-							  dropout=DROPOUT,
-							  static=True, #todo?
-							  in_channels=1) #todo?
+							  dropout=DROPOUT)
 		"""
 	elif args.model == "dpcnn":
 		model = models.DPCNN(input_dim = INPUT_DIM,
