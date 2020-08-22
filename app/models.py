@@ -63,28 +63,91 @@ class KimCNN(nn.Module):
 		
 		x = [F.max_pool1d(conv, conv.shape[2]).squeeze(2) for conv in x]
 		x = torch.cat(x, dim = 1)
+		print("s1: ", x.size())
 		x = self.dropout(x)
+		print("s2: ", x.size())
 		output = self.fc(x)
+		print("s3: ", x.size())
 		return output
 
+class DPCNN(nn.Module):
+    """
+    DPCNN for sentences classification.
+    """
+    def __init__(self, input_dim, output_dim, embedding_dim):
+        super(DPCNN, self).__init__()
+        self.channel_size = 250
+
+        self.output_dim = output_dim
+        self.embedding = nn.Embedding(input_dim, embedding_dim)
+
+        self.conv_region_embedding = nn.Conv2d(1, self.channel_size, (3, embedding_dim), stride=1)
+        self.conv3 = nn.Conv2d(self.channel_size, self.channel_size, (3, 1), stride=1)
+        self.pooling = nn.MaxPool2d(kernel_size=(3, 1), stride=2)
+        self.padding_conv = nn.ZeroPad2d((0, 0, 1, 1))
+        self.padding_pool = nn.ZeroPad2d((0, 0, 0, 1))
+        self.act_fun = nn.ReLU()
+        self.linear_out = nn.Linear(2*self.channel_size, self.output_dim)
+
+    def forward(self, x):
+        batch = x.shape[0]
+        print("Batch: ", batch)
+        print("size1: ", x.size())
+        x = x.unsqueeze(1)
+        print("size2: ", x.size())
+        x = self.embedding(x)
+        print("size3: ", x.size())
+
+        # Region embedding
+        x = self.conv_region_embedding(x)  
+        x = self.padding_conv(x)
+        x = self.act_fun(x)
+        x = self.conv3(x)
+        x = self.padding_conv(x)
+        x = self.act_fun(x)
+        x = self.conv3(x)
+
+        while x.size()[-2] > 2:
+            x = self._block(x)
+
+        print("size4: ", x.size())
+        x = x.squeeze(2)
+        x = x.squeeze(2)
+        print("size4.2: ", x.size())
+        x = x.view(batch, self.channel_size * 2)
+        #x = x.view(self.output_dim)
+        print("size5: ", x.size())
+        x = self.linear_out(x)
+        print("size6: ", x.size())
+        return x
+
+    def _block(self, x):
+        # Pooling
+        x = self.padding_pool(x)
+        px = self.pooling(x)
+
+        # Convolution
+        x = self.padding_conv(px)
+        x = F.relu(x)
+        x = self.conv3(x)
+
+        x = self.padding_conv(x)
+        x = F.relu(x)
+        x = self.conv3(x)
+
+        # Short Cut
+        x = x + px
+
+        return x
+
+    """TODO: weg?
+    def predict(self, x):
+        self.eval()
+        out = self.forward(x)
+        predict_labels = torch.max(out, 1)[1]
+        self.train(mode=True)
+        return predict_labels
 	"""
-
-	def forward(self, x):
-		batch_size, seq_len = x.size()
-		print("x size: ", x.size())
-		conv_in = self.embedding(x).view(batch_size, 1, -1)
-		if self.in_channels == 2:
-			conv_in_multi = self.embedding(x).view(batch_size, 1, -1)
-			conv_in = torch.cat((conv_in, conv_in_multi), 1)
-
-		conv_result = [F.max_pool1d(F.relu(getattr(self, 'conv_' + str(fs))(conv_in)), seq_len - fs + 1).view(-1, input_dim) for fs in self.filter_sizes]
-		out = torch.cat(conv_result, 1)
-		out = self.dropout()
-		out = self.fc(out)
-
-		return out
-	"""	
-
 
 class KimCNN2(nn.Module):
 	""" Code taken from here:
