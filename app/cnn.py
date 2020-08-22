@@ -245,6 +245,10 @@ def main():
 		pretrained_embeddings = TEXT.vocab.vectors 
 		UNK_IDX = TEXT.vocab.stoi[TEXT.unk_token] + 1
 		model.embedding.weight.data[UNK_IDX] = torch.zeros(EMBEDDING_DIM)
+	else:
+		for name, param in model.named_parameters():                
+			if name.startswith('bert'):
+				param.requires_grad = False
 	# put model and loss criterion to device (cpu or gpu)
 	model = model.to(device)
 	CRITERION = CRITERION.to(device)
