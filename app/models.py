@@ -16,76 +16,114 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils import data
 #from torchtext import data, datasets
+from torch.autograd import Variable
 
 
-class SimpleCNN(nn.Module):
-	def __init__(self, vocab_size, embedding_dim, n_filters, filter_sizes, 
-				 output_dim, dropout, pad_idx):
-		
-		super().__init__()
-		self.embedding = nn.Embedding(vocab_size, embedding_dim)
+class KimCNN(nn.Module):
+	def __init__(self, input_dim, output_dim, embedding_dim, 
+				 embedding_type, n_filters, filter_sizes, 
+				 dropout, transformer_model=""):
+		super(KimCNN, self).__init__()
+
+		self.in_channels = 1
+
+		if transformer_model:
+			self.transformer_model = transformer_model
+			embedding_dim = transformer_model.config.to_dict()['hidden_size']
+		else:
+			self.transformer_model = ""
+
+		self.embedding = nn.Embedding(input_dim, embedding_dim, padding_idx=1)
+		self.embedding.weight.requires_grad = False
 		self.convs = nn.ModuleList([
-									nn.Conv2d(in_channels = 1, 
-											  out_channels = n_filters, 
-											  kernel_size = (fs, embedding_dim)) 
-									for fs in filter_sizes
-									])
+				nn.Conv1d(in_channels = self.in_channels,
+				  		  out_channels = n_filters, 
+					  	  kernel_size = (fs, embedding_dim)) 
+				for fs in filter_sizes
+			])
 		self.fc = nn.Linear(len(filter_sizes) * n_filters, output_dim)
 		self.dropout = nn.Dropout(dropout)
-		
-	def forward(self, text):
-		text = text.permute(1, 0)
-		embedded = self.embedding(text)  
-		embedded = embedded.unsqueeze(1)
-		conved = [F.relu(conv(embedded)).squeeze(3) for conv in self.convs]
-		pooled = [F.max_pool1d(conv, conv.shape[2]).squeeze(2) for conv in conved]
-		cat = self.dropout(torch.cat(pooled, dim = 1))
-			
-		return self.fc(cat)
+	
+	
+	def forward(self, x):
+		if self.transformer_model:
+			with torch.no_grad():
+				x = self.transformer_model(x)[0]
+		else:
+			x = x.permute(1, 0)
+			x = self.embedding(x)  
+		x = x.unsqueeze(1)
+		x = [F.relu(conv(x)).squeeze(3) for conv in self.convs]
 
+		if self.in_channels == 2:
+			batch_size, _ = x.size()
+			conv_in = self.embeddings(x).view(batch_size, 1, -1)
+			x = self.embeddings(x).view(batch_size, 1, -1)
+			x = torch.cat((conv_in, x), 1)
+		
+		x = [F.max_pool1d(conv, conv.shape[2]).squeeze(2) for conv in x]
+		x = torch.cat(x, dim = 1)
+		x = self.dropout(x)
+		output = self.fc(x)
+		return output
+
+	"""
+
+	def forward(self, x):
+		batch_size, seq_len = x.size()
+		print("x size: ", x.size())
+		conv_in = self.embedding(x).view(batch_size, 1, -1)
+		if self.in_channels == 2:
+			conv_in_multi = self.embedding(x).view(batch_size, 1, -1)
+			conv_in = torch.cat((conv_in, conv_in_multi), 1)
+
+		conv_result = [F.max_pool1d(F.relu(getattr(self, 'conv_' + str(fs))(conv_in)), seq_len - fs + 1).view(-1, input_dim) for fs in self.filter_sizes]
+		out = torch.cat(conv_result, 1)
+		out = self.dropout()
+		out = self.fc(out)
+
+		return out
+	"""	
 
 
 class KimCNN2(nn.Module):
 	""" Code taken from here:
-		https://github.com/galsang/CNN-sentence-classification-pytorch/blob/master/model.py
+		https://towardsdatascience.com/identifying-hate-speech-with-bert-and-cnn-b7aa2cddd60d
 	"""
 	def __init__(self, embed_num, embed_dim, class_num, kernel_num, 
-				 kernel_sizes, dropout, static):
+				 kernel_sizes, dropout, static, in_channels):
+
 		super(KimCNN2, self).__init__()
-		self.embed_num = embed_num
-		self.embed_dim = embed_dim
-		self.class_num = class_num
-		self.kernel_num = kernel_num
-		self.kernel_sizes = kernel_sizes
+		
 		
 		self.static = static
-		self.embed = nn.Embedding(embed_num, embed_dim)
+		self.embedding = nn.Embedding(embed_num, embed_dim)
 		self.convs1 = nn.ModuleList([
-				nn.Conv2d(1, kernel_num, (size, embed_dim)) for size in kernel_sizes
+				nn.Conv1d(in_channels, kernel_num, (size, embed_dim)) for size in kernel_sizes
 			])
 		self.dropout = nn.Dropout(dropout)
 		self.fc1 = nn.Linear(len(kernel_sizes) * kernel_num, class_num)
-		self.sigmoid = nn.Sigmoid()
 		
+
 	def forward(self, x):
 		if self.static:
 			x = Variable(x)
-		x = x.unsqueeze(1)  # (N, Ci, W, embed_dim)
-		x = [F.relu(conv(x)).squeeze(3) for conv in self.convs1]  # [(N, kernel_num, W), ...]*len(Ks)
-		x = [F.max_pool1d(i, i.size(2)).squeeze(2) for i in x]  # [(N, kernel_num), ...]*len(Ks)
+		x = x.unsqueeze(1)
+		x = [F.relu(conv(x)).squeeze(3) for conv in self.convs1] 
+		x = [F.max_pool1d(i, i.size(2)).squeeze(2) for i in x] 
 		x = torch.cat(x, 1)
-		x = self.dropout(x)  # (N, len(Ks) * kernel_num)
-		output = self.fc1(x)  # (N, class_num)
+		x = self.dropout(x) 
+		output = self.fc1(x) 
 		return output
 
 
 
-class KimCNN(nn.Module):
+class KimCNN3(nn.Module):
 	""" Implementation taken from here:
 		https://github.com/baaesh/CNN-sentence-classification-pytorch/blob/master/model.py
 	"""
 	def __init__(self, args, data, vectors):
-		super(KimCNN, self).__init__()
+		super(KimCNN3, self).__init__()
 
 		self.args = args
 
@@ -130,3 +168,13 @@ class KimCNN(nn.Module):
 		out = self.fc(out)
 
 		return out
+
+#TODO
+"""
+self.embed_num = embed_num # =vocab_size, maximum number of words in review
+self.embed_dim = embed_dim # 768 for bert
+self.class_num = class_num # 5 classes with reviews dataset
+self.kernel_num = kernel_num # number of filters for each convolution operation
+self.kernel_sizes = kernel_sizes # e.g. combinations of 2, 3, 4, ... words
+self.in_channels = in_channels
+"""
