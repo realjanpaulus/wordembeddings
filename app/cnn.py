@@ -1,3 +1,5 @@
+CUDA_LAUNCH_BLOCKING="1"
+
 # TODO: 
 # - alles überprüfen
 # - weitere embeddings
@@ -59,23 +61,22 @@ def main():
 	# hyperparamaters # 
 	# =================
 
-
-	MAX_VOCAB_SIZE = args.max_features
 	BATCH_SIZE = args.batch_size
-	EPOCHS = args.epochs
 	DATA_PATH = args.datapath
-
-	
-	N_FILTERS = 3
-	FILTER_SIZES = [3,4,5]
 	DROPOUT = 0.5
+	EPOCHS = args.epochs
+	
+	FILTER_SIZES = [3,4,5]
 	LEARNING_RATE = args.learning_rate
-
-
+	MAX_VOCAB_SIZE = args.max_features
+	N_FILTERS = 3
+	
+	
+	# ============
 	# embeddings #
+	# ============
 
 	EMBEDDING_TYPE = args.embedding_type
-	#TODO: ergänzen
 	embeddings_dict = {"bert": {"name": "bert-base-uncased", "dim": 768},
 					   "fasttext": {"name": "fasttext.simple.300d", "dim": 300},
 					   "glove": {"name": "glove.6B.100d", "dim": 100}
@@ -154,6 +155,9 @@ def main():
 	LABEL.build_vocab(train_data)
 	OUTPUT_DIM = len(LABEL.vocab)
 
+	
+
+
 	if torch.cuda.is_available():       
 		device = torch.device("cuda")
 		logging.info(f'There are {torch.cuda.device_count()} GPU(s) available.')
@@ -179,8 +183,6 @@ def main():
 
 	if EMBEDDING_TYPE == "bert":
 		TRANSFORMER_MODEL = transformers.BertModel.from_pretrained(EMBEDDING_NAME)
-		EMBEDDING_DIM2 = TRANSFORMER_MODEL.config.to_dict()['hidden_size']
-		print("Embedding dim2", EMBEDDING_DIM2) #todo:weg
 	else:
 		TRANSFORMER_MODEL = ""
 	
@@ -265,10 +267,9 @@ def main():
 		model.train() 
 		
 		for batch in iterator:
-			
 			optimizer.zero_grad()
 			if EMBEDDING_TYPE == "bert":
-				predictions = model(batch.text)#.squeeze(1)
+				predictions = model(batch.text).squeeze(1)
 			else:
 				predictions = model(batch.text)
 			loss = criterion(predictions, batch.label)
