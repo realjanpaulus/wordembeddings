@@ -201,11 +201,8 @@ def main():
 	logging.info("#####################################")
 	print("\n")
 
-	if args.model == "standard":
-
-		print("there is no standard.")
-		exit()
-	elif args.model == "kimcnn":
+	
+	if args.model == "kimcnn":
 		model = models.KimCNN(input_dim = INPUT_DIM,
 							  output_dim = OUTPUT_DIM, 
 							  embedding_dim = EMBEDDING_DIM, 
@@ -225,6 +222,10 @@ def main():
 							  static=True, #todo?
 							  in_channels=1) #todo?
 		"""
+	elif args.model == "dpcnn":
+		model = models.DPCNN(input_dim = INPUT_DIM,
+							 output_dim = OUTPUT_DIM, 
+							 embedding_dim = EMBEDDING_DIM)
 	else:
 		logging.info(f"Model '{args.model}' does not exist. Script will be stopped.")
 		exit()
@@ -267,7 +268,7 @@ def main():
 			
 			optimizer.zero_grad()
 			if EMBEDDING_TYPE == "bert":
-				predictions = model(batch.text).squeeze(1)
+				predictions = model(batch.text)#.squeeze(1)
 			else:
 				predictions = model(batch.text)
 			loss = criterion(predictions, batch.label)
