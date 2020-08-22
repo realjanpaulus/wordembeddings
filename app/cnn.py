@@ -3,7 +3,7 @@
 # - weitere embeddings
 # - passen die dimensionen?
 # - in models.py kimcnn anpassen. das standard ist kimcnn. ein weiteres 
-# 	selbstgebautes netz hinzufügen?!
+#   selbstgebautes netz hinzufügen?!
 
 import argparse
 import logging
@@ -154,10 +154,15 @@ def main():
 	LABEL.build_vocab(train_data)
 	OUTPUT_DIM = len(LABEL.vocab)
 
-	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+	if torch.cuda.is_available():       
+		device = torch.device("cuda")
+		logging.info(f'There are {torch.cuda.device_count()} GPU(s) available.')
+		logging.info('Device name:', torch.cuda.get_device_name(0))
 
-	if torch.cuda.is_available():
-		logging.info("GPU will be used.")
+	else:
+		logging.info('No GPU available, using the CPU instead.')
+		device = torch.device("cpu")
+
 
 
 	train_iterator, val_iterator, test_iterator = data.BucketIterator.splits((train_data, val_data, test_data), 
@@ -349,9 +354,11 @@ if __name__ == "__main__":
 	parser.add_argument("--embedding_type", "-et", type=str, default="glove", help="Indicates embedding type.")
 	parser.add_argument("--epochs", "-e", type=int, default=10, help="Indicates number of epochs.")
 	parser.add_argument("--learning_rate", "-lr", type=float, default=0.001, help="Set learning rate for optimizer.")
+	#TODO: weg?
 	parser.add_argument("--load_savefile", "-lsf", action="store_true", help="Loads savefile as input NN.")
 	parser.add_argument("--max_features", "-mf", type=int, default=25000, help="Set the maximum size of vocabulary.")
-	parser.add_argument("--model", "-m", default="standard", help="Indicates used cnn model: Available: 'standard', 'kimcnn'.")
+	parser.add_argument("--model", "-m", default="kimcnn", help="Indicates used cnn model: Available: 'standard', 'kimcnn'.")
+	#TODO: weg?
 	parser.add_argument("--save_date", "-sd", action="store_true", help="Indicates if the creation date of the results should be saved.")
 	
 	args = parser.parse_args()
