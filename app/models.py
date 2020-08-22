@@ -48,6 +48,7 @@ class KimCNN(nn.Module):
 	def forward(self, x):
 		if self.transformer_model:
 			with torch.no_grad():
+				print("x size: ", x.size())
 				x = self.transformer_model(x)[0]
 		else:
 			x = x.permute(1, 0)
