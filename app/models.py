@@ -26,14 +26,15 @@ class KimCNN(nn.Module):
 		super(KimCNN, self).__init__()
 
 		self.in_channels = 1
+		self.embedding_dim = embedding_dim
 
 		if transformer_model:
 			self.transformer_model = transformer_model
-			embedding_dim = transformer_model.config.to_dict()['hidden_size']
+			self.embedding_dim = transformer_model.config.to_dict()['hidden_size']
 		else:
 			self.transformer_model = ""
 
-		self.embedding = nn.Embedding(input_dim, embedding_dim)
+		self.embedding = nn.Embedding(input_dim, self.embedding_dim, padding_idx=1)
 		self.embedding.weight.requires_grad = False
 		self.convs = nn.ModuleList([
 				nn.Conv1d(in_channels = self.in_channels,
@@ -48,8 +49,9 @@ class KimCNN(nn.Module):
 	def forward(self, x):
 		if self.transformer_model:
 			with torch.no_grad():
-				print("x size: ", x.size())
+				print("xsize1: ", x.size())
 				x = self.transformer_model(x)[0]
+				print("xsize2: ", x.size())
 		else:
 			x = x.permute(1, 0)
 			x = self.embedding(x)  
@@ -64,11 +66,8 @@ class KimCNN(nn.Module):
 		
 		x = [F.max_pool1d(conv, conv.shape[2]).squeeze(2) for conv in x]
 		x = torch.cat(x, dim = 1)
-		print("s1: ", x.size())
 		x = self.dropout(x)
-		print("s2: ", x.size())
 		output = self.fc(x)
-		print("s3: ", x.size())
 		return output
 
 class DPCNN(nn.Module):
