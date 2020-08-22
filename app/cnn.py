@@ -202,7 +202,7 @@ def main():
 
 	
 	if args.model == "kimcnn":
-		model = models.KimCNN(input_dim = INPUT_DIM,
+		model = models.KimCNN(input_dim = INPUT_DIM + 2,
 							  output_dim = OUTPUT_DIM, 
 							  embedding_dim = EMBEDDING_DIM, 
 							  embedding_type = EMBEDDING_TYPE,
