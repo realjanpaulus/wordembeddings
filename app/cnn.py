@@ -157,12 +157,10 @@ def main():
 	if torch.cuda.is_available():       
 		device = torch.device("cuda")
 		logging.info(f'There are {torch.cuda.device_count()} GPU(s) available.')
-		logging.info('Device name:', torch.cuda.get_device_name(0))
-
+		logging.info(f'Device name: {torch.cuda.get_device_name(0)}')
 	else:
 		logging.info('No GPU available, using the CPU instead.')
 		device = torch.device("cpu")
-
 
 
 	train_iterator, val_iterator, test_iterator = data.BucketIterator.splits((train_data, val_data, test_data), 
