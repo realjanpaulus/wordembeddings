@@ -33,7 +33,7 @@ class KimCNN(nn.Module):
 		else:
 			self.transformer_model = ""
 
-		self.embedding = nn.Embedding(input_dim, embedding_dim, padding_idx=1)
+		self.embedding = nn.Embedding(input_dim, embedding_dim)
 		self.embedding.weight.requires_grad = False
 		self.convs = nn.ModuleList([
 				nn.Conv1d(in_channels = self.in_channels,
