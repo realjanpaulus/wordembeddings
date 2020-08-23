@@ -301,7 +301,7 @@ def main():
 		logging.info(f'\tVal. Loss: {val_loss:.3f} |  Val. Acc: {val_acc*100:.2f}%')
 
 
-		if utils.early_stopping(val_losses_epochs, patience=args.patience):
+		if early_stopping(val_losses_epochs, patience=args.patience):
 			logging.info(f"Stopping epoch run early (Epoch {epoch}).")
 			break
 
