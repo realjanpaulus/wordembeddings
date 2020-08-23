@@ -287,6 +287,7 @@ def main():
 		train_losses.append(train_loss)
 		val_losses.append(val_loss)
 		val_losses_epochs[f"epoch{epoch}"] = val_loss
+		print(val_losses_epochs)
 		
 		end_time = time.time()
 		epoch_mins, epoch_secs = epoch_time(start_time, end_time)
