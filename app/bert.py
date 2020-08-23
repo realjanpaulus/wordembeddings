@@ -85,9 +85,11 @@ def main():
 		logging.info('No GPU available, using the CPU instead.')
 		device = torch.device("cpu")
 
-	train_data = utils.load_jsonl_to_df('../corpora/splits/train.json')
-	val_data = utils.load_jsonl_to_df('../corpora/splits/val.json')
-	test_data = utils.load_jsonl_to_df('../corpora/splits/test.json')
+	dir_path = args.datapath
+
+	train_data = utils.load_jsonl_to_df(f'{dir_path}train.json')
+	val_data = utils.load_jsonl_to_df(f'{dir_path}val.json')
+	test_data = utils.load_jsonl_to_df(f'{dir_path}test.json')
 
 
 	
@@ -395,6 +397,7 @@ if __name__ == "__main__":
 	
 	parser = argparse.ArgumentParser(prog="bertclf", description="Bert classifier.")
 	parser.add_argument("--batch_size", "-bs", type=int, default=8, help="Indicates batch size.")
+	parser.add_argument("--datapath", "-dp", default="../corpora/splits/", help="Indicates dataset path.")
 	parser.add_argument("--epochs", "-e", type=int, default=10, help="Indicates number of epochs.")
 	parser.add_argument("--learning_rate", "-lr", type=float, default=2e-5, help="Set learning rate for optimizer.")
 	parser.add_argument("--max_length", "-ml", type=int, default=510, help="Indicates the maximum document length.")
