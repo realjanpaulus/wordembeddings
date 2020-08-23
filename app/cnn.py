@@ -1,11 +1,14 @@
 CUDA_LAUNCH_BLOCKING="1"
 
 # TODO: 
+# - alles mit BERT rausschmeißen
+# - stattdessen word2vec integrieren
 # - alles überprüfen
 # - weitere embeddings
 # - passen die dimensionen?
 # - in models.py kimcnn anpassen. das standard ist kimcnn. ein weiteres 
 #   selbstgebautes netz hinzufügen?!
+
 
 import argparse
 import logging
@@ -77,17 +80,19 @@ def main():
 	# ============
 
 	EMBEDDING_TYPE = args.embedding_type
-	embeddings_dict = {"bert": {"name": "bert-base-uncased", "dim": 768},
-					   "fasttext": {"name": "fasttext.simple.300d", "dim": 300},
-					   "glove": {"name": "glove.6B.100d", "dim": 100}
-					   }
-
-	try:
-		EMBEDDING_NAME = embeddings_dict[EMBEDDING_TYPE]["name"]
-		EMBEDDING_DIM = embeddings_dict[EMBEDDING_TYPE]["dim"]
-	except KeyError:
-		 EMBEDDING_NAME = "unknown"
-		 EMBEDDING_DIM = 100
+	
+	if EMBEDDING_TYPE == "fasttext":
+		EMBEDDING_NAME = "fasttext.simple.300d"
+		EMBEDDING_DIM = 300
+	elif EMBEDDING_TYPE == "glove":
+		EMBEDDING_NAME = "glove.6B.100d"
+		EMBEDDING_DIM = 100
+	elif EMBEDDING_TYPE == "word2vec":
+		EMBEDDING_NAME = "GoogleNews-vectors-negative300"
+		EMBEDDING_DIM = 100
+	else:	
+		EMBEDDING_NAME = "unknown"
+		EMBEDDING_DIM = 100
 
 	# ===============
 	# preprocessing #
@@ -95,37 +100,8 @@ def main():
 
 	# stop_words = stopwords.words('english') + punctuation 
 
-	if EMBEDDING_TYPE == "bert":
-
-		tokenizer = transformers.BertTokenizer.from_pretrained(EMBEDDING_NAME)
-		max_input_length = tokenizer.max_model_input_sizes[EMBEDDING_NAME]
-
-		def tokenize_and_cut(sentence):
-			tokens = tokenizer.tokenize(sentence) 
-			tokens = tokens[:max_input_length-2]
-			return tokens
-
-		# indices of special tokens CLS, SEP, PAD, UNK
-		init_token_idx = tokenizer.convert_tokens_to_ids(tokenizer.cls_token)
-		eos_token_idx = tokenizer.convert_tokens_to_ids(tokenizer.sep_token)
-		pad_token_idx = tokenizer.convert_tokens_to_ids(tokenizer.pad_token)
-		unk_token_idx = tokenizer.convert_tokens_to_ids(tokenizer.unk_token)
-
-		TEXT = data.Field(batch_first = True,
-						  use_vocab = False,
-						  tokenize = tokenize_and_cut,
-						  preprocessing = tokenizer.convert_tokens_to_ids,
-						  init_token = init_token_idx,
-						  eos_token = eos_token_idx,
-						  pad_token = pad_token_idx,
-						  unk_token = unk_token_idx,
-						  lower=True)
-
-
-		INPUT_DIM = max_input_length
-
-	else:
-		TEXT = data.Field(tokenize = "toktok",
+	
+	TEXT = data.Field(tokenize = "toktok",
 						  lower = True)
 
 
@@ -141,17 +117,18 @@ def main():
 																 fields=assigned_fields,
 																 skip_header = True)
 
-
-	if EMBEDDING_TYPE != "bert":
+	if EMBEDDING_TYPE == "word2vec":
+		TEXT.build_vocab(train_data)
+		vectors = get_word2vec(TEXT, path=f"embeddings/{EMBEDDING_NAME}.bin")
+	else:
+		vectors = ""
 		TEXT.build_vocab(train_data, 
 						 vectors = EMBEDDING_NAME, 
 						 unk_init = torch.Tensor.normal_,
 						 max_size = MAX_VOCAB_SIZE)
-	
-		INPUT_DIM = len(TEXT.vocab)
-		
-
 	LABEL.build_vocab(train_data)
+
+	INPUT_DIM = len(TEXT.vocab)
 	OUTPUT_DIM = len(LABEL.vocab)
 
 	
@@ -173,16 +150,11 @@ def main():
 
 	
 	
-
 	# ===========
 	# CNN Model #
 	# ===========
 
-	if EMBEDDING_TYPE == "bert":
-		TRANSFORMER_MODEL = transformers.BertModel.from_pretrained(EMBEDDING_NAME)
-	else:
-		TRANSFORMER_MODEL = ""
-	
+		
 	print("\n")
 	logging.info("#####################################")
 	logging.info(f"Input dimension (= vocab size): {INPUT_DIM}")
@@ -193,33 +165,24 @@ def main():
 	logging.info(f"Filter sizes: {FILTER_SIZES}")
 	logging.info(f"Dropout: {DROPOUT}")
 
-	if TRANSFORMER_MODEL:
-		logging.info("Transformers model: Bert")
-	else:
-		logging.info("Transformers model: None")
 	logging.info("#####################################")
 	print("\n")
 
 	
 	if args.model == "kimcnn":
-		model = models.KimCNN(input_dim = INPUT_DIM + 2,
+		model = models.KimCNN(input_dim = INPUT_DIM,
 							  output_dim = OUTPUT_DIM, 
 							  embedding_dim = EMBEDDING_DIM, 
 							  embedding_type = EMBEDDING_TYPE,
 							  n_filters = N_FILTERS, 
 							  filter_sizes = FILTER_SIZES, 
-							  dropout = DROPOUT, 
-							  transformer_model = TRANSFORMER_MODEL)
+							  dropout = DROPOUT,
+							  vectors = vectors)
+
 		
-		"""
-		model = models.KimCNN(embed_num=MAX_VOCAB_SIZE + 2,
-							  embed_dim=EMBEDDING_DIM,
-							  class_num=5, #TODO!
-							  kernel_num=3, #TODO!
-							  kernel_sizes=FILTER_SIZES,
-							  dropout=DROPOUT)
-		"""
+		
 	elif args.model == "dpcnn":
+		#todo: weiter
 		model = models.DPCNN(input_dim = INPUT_DIM,
 							 output_dim = OUTPUT_DIM, 
 							 embedding_dim = EMBEDDING_DIM)
@@ -233,7 +196,7 @@ def main():
 
 
 	# for pt model
-	output_add = f'_e{EPOCHS}_bs{BATCH_SIZE}_mf{MAX_VOCAB_SIZE}_emb{EMBEDDING_NAME}'
+	output_add = f'_e{EPOCHS}_bs{BATCH_SIZE}_mf{MAX_VOCAB_SIZE}_emb{EMBEDDING_TYPE}'
 	output_file = f'savefiles/cnnmodel{output_add}.pt'
 
 	if args.load_savefile:
@@ -241,14 +204,13 @@ def main():
 	
 
 	# load embeddings
-	if EMBEDDING_TYPE != "bert":
-		pretrained_embeddings = TEXT.vocab.vectors 
-		UNK_IDX = TEXT.vocab.stoi[TEXT.unk_token] + 1
-		model.embedding.weight.data[UNK_IDX] = torch.zeros(EMBEDDING_DIM)
-	else:
-		for name, param in model.named_parameters():                
-			if name.startswith('bert'):
-				param.requires_grad = False
+	pretrained_embeddings = TEXT.vocab.vectors 
+	UNK_IDX = TEXT.vocab.stoi[TEXT.unk_token]
+	PAD_IDX = TEXT.vocab.stoi[TEXT.pad_token]
+
+	model.embedding.weight.data[UNK_IDX] = torch.zeros(EMBEDDING_DIM)
+	model.embedding.weight.data[PAD_IDX] = torch.zeros(EMBEDDING_DIM)
+
 	# put model and loss criterion to device (cpu or gpu)
 	model = model.to(device)
 	CRITERION = CRITERION.to(device)
@@ -267,10 +229,7 @@ def main():
 		
 		for batch in iterator:
 			optimizer.zero_grad()
-			if EMBEDDING_TYPE == "bert":
-				predictions = model(batch.text).squeeze(1)
-			else:
-				predictions = model(batch.text)
+			predictions = model(batch.text)
 			loss = criterion(predictions, batch.label)
 			acc = categorical_accuracy(predictions, batch.label)
 			loss.backward()
@@ -296,10 +255,7 @@ def main():
 		
 		with torch.no_grad():
 			for batch in iterator:
-				if EMBEDDING_TYPE == "bert":
-					predictions = model(batch.text).squeeze(1)
-				else:
-					predictions = model(batch.text)
+				predictions = model(batch.text)
 				loss = criterion(predictions, batch.label)
 				acc = categorical_accuracy(predictions, batch.label)
 
@@ -328,7 +284,6 @@ def main():
 
 		if valid_loss < best_valid_loss:
 			best_valid_loss = valid_loss
-			# TODO: string anpassen
 			torch.save(model.state_dict(), output_file)
 		
 		logging.info(f'Epoch: {epoch+1:02} | Epoch Time: {epoch_mins}m {epoch_secs}s')
@@ -350,15 +305,12 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(prog="cnn", description="CNN for sentiment analysis.")
 	parser.add_argument("--batch_size", "-bs", type=int, default=8, help="Indicates batch size.")
 	parser.add_argument("--datapath", "-dp", default="../corpora/splits/", help="Indicates dataset path.")
-	parser.add_argument("--embedding_type", "-et", type=str, default="glove", help="Indicates embedding type.")
+	parser.add_argument("--embedding_type", "-et", type=str, default="glove", help="Indicates embedding type. Possible values: 'fasttext', 'glove', 'word2vec'.")
 	parser.add_argument("--epochs", "-e", type=int, default=10, help="Indicates number of epochs.")
 	parser.add_argument("--learning_rate", "-lr", type=float, default=0.001, help="Set learning rate for optimizer.")
-	#TODO: weg?
 	parser.add_argument("--load_savefile", "-lsf", action="store_true", help="Loads savefile as input NN.")
 	parser.add_argument("--max_features", "-mf", type=int, default=25000, help="Set the maximum size of vocabulary.")
 	parser.add_argument("--model", "-m", default="kimcnn", help="Indicates used cnn model: Available: 'standard', 'kimcnn'.")
-	#TODO: weg?
-	parser.add_argument("--save_date", "-sd", action="store_true", help="Indicates if the creation date of the results should be saved.")
 	
 	args = parser.parse_args()
 

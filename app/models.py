@@ -20,22 +20,22 @@ from torch.autograd import Variable
 
 
 class KimCNN(nn.Module):
+	""" Implementation of the KimCNN Model of this paper:
+		https://www.aclweb.org/anthology/D14-1181.pdf
+	"""
 	def __init__(self, input_dim, output_dim, embedding_dim, 
 				 embedding_type, n_filters, filter_sizes, 
-				 dropout, transformer_model=""):
+				 dropout, vectors):
 		super(KimCNN, self).__init__()
 
 		self.in_channels = 1
 		self.embedding_dim = embedding_dim
-
-		if transformer_model:
-			self.transformer_model = transformer_model
-			self.embedding_dim = transformer_model.config.to_dict()['hidden_size']
-		else:
-			self.transformer_model = ""
-
 		self.embedding = nn.Embedding(input_dim, self.embedding_dim, padding_idx=1)
+
+		if vectors != "":
+			self.embedding.weight.data.copy_(torch.from_numpy(vectors))
 		self.embedding.weight.requires_grad = False
+
 		self.convs = nn.ModuleList([
 				nn.Conv1d(in_channels = self.in_channels,
 				  		  out_channels = n_filters, 
@@ -47,25 +47,10 @@ class KimCNN(nn.Module):
 	
 	
 	def forward(self, x):
-		if self.transformer_model:
-			with torch.no_grad():
-				print("xsize1: ", x.size())
-				x = self.transformer_model(x)[0]
-				print("xsize2: ", x.size())
-		else:
-			x = x.permute(1, 0)
-			x = self.embedding(x) 
-
-		#print("\n bis hierhin \n") #todo 
+		x = x.permute(1, 0)
+		x = self.embedding(x) 
 		x = x.unsqueeze(1)
 		x = [F.relu(conv(x)).squeeze(3) for conv in self.convs]
-
-		if self.in_channels == 2:
-			batch_size, _ = x.size()
-			conv_in = self.embeddings(x).view(batch_size, 1, -1)
-			x = self.embeddings(x).view(batch_size, 1, -1)
-			x = torch.cat((conv_in, x), 1)
-		
 		x = [F.max_pool1d(conv, conv.shape[2]).squeeze(2) for conv in x]
 		x = torch.cat(x, dim = 1)
 		x = self.dropout(x)
@@ -151,35 +136,7 @@ class DPCNN(nn.Module):
         return predict_labels
 	"""
 
-class KimCNN2(nn.Module):
-	""" Code taken from here:
-		https://towardsdatascience.com/identifying-hate-speech-with-bert-and-cnn-b7aa2cddd60d
-	"""
-	def __init__(self, embed_num, embed_dim, class_num, kernel_num, 
-				 kernel_sizes, dropout, static, in_channels):
 
-		super(KimCNN2, self).__init__()
-		
-		
-		self.static = static
-		self.embedding = nn.Embedding(embed_num, embed_dim)
-		self.convs1 = nn.ModuleList([
-				nn.Conv1d(in_channels, kernel_num, (size, embed_dim)) for size in kernel_sizes
-			])
-		self.dropout = nn.Dropout(dropout)
-		self.fc1 = nn.Linear(len(kernel_sizes) * kernel_num, class_num)
-		
-
-	def forward(self, x):
-		if self.static:
-			x = Variable(x)
-		x = x.unsqueeze(1)
-		x = [F.relu(conv(x)).squeeze(3) for conv in self.convs1] 
-		x = [F.max_pool1d(i, i.size(2)).squeeze(2) for i in x] 
-		x = torch.cat(x, 1)
-		x = self.dropout(x) 
-		output = self.fc1(x) 
-		return output
 
 
 
@@ -234,12 +191,4 @@ class KimCNN3(nn.Module):
 
 		return out
 
-#TODO
-"""
-self.embed_num = embed_num # =vocab_size, maximum number of words in review
-self.embed_dim = embed_dim # 768 for bert
-self.class_num = class_num # 5 classes with reviews dataset
-self.kernel_num = kernel_num # number of filters for each convolution operation
-self.kernel_sizes = kernel_sizes # e.g. combinations of 2, 3, 4, ... words
-self.in_channels = in_channels
-"""
+

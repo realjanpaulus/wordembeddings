@@ -3,6 +3,7 @@ import contractions
 from collections import defaultdict
 import datetime
 import gensim
+from gensim.models import KeyedVectors
 import glob
 import io
 import json
@@ -26,7 +27,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 import time
+
 import torch
+from torch.utils import data
+from torchtext import data, datasets
+
 from typing import Dict, List, Optional, Tuple, Union
 
 
@@ -143,6 +148,21 @@ def format_time(elapsed):
 	"""
 	elapsed_rounded = int(round((elapsed)))
 	return str(datetime.timedelta(seconds=elapsed_rounded))
+
+
+def get_word2vec(text, path = 'embeddings/GoogleNews-vectors-negative300.bin'):
+	""" Get word2vec embeddings by path."""
+	vectors = []
+	word2vec = KeyedVectors.load_word2vec_format(path, binary=True)
+
+	for i in range(len(text.vocab)):
+		word = text.vocab.itos[i]
+		if word in word2vec.vocab:
+			vectors.append(word2vec[word])
+		else:
+			vectors.append(np.random.uniform(-0.01, 0.01, 100))
+
+	return np.array(vectors)
 
 def load_jsonl_to_df(path):
 	""" Create dataframe from a JSON lines file. """

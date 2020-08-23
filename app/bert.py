@@ -62,7 +62,7 @@ def main():
 	learning_rate = args.learning_rate
 	max_length = args.max_length
 
-	model_name = "bert-base-uncased"
+	model_name = "bert-large-uncased"
 
 	class_name = "rating"
 	text_name = "review"
