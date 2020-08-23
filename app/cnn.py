@@ -2,9 +2,6 @@ CUDA_LAUNCH_BLOCKING="1"
 
 # TODO: 
 # - alles überprüfen
-# - weitere embeddings
-# - passen die dimensionen?
-# - in models.py kimcnn anpassen. das standard ist kimcnn. ein weiteres 
 #   selbstgebautes netz hinzufügen?!
 
 
@@ -184,7 +181,8 @@ def main():
 		#todo: weiter
 		model = models.DPCNN(input_dim = INPUT_DIM,
 							 output_dim = OUTPUT_DIM, 
-							 embedding_dim = EMBEDDING_DIM)
+							 embedding_dim = EMBEDDING_DIM,
+							 n_filters = 250)
 
 		#TODO? anderen optimizer?
 		OPTIMIZER = optim.Adam(model.parameters(), lr=LEARNING_RATE)
@@ -306,7 +304,7 @@ def main():
 			break
 
 
-	logging.info("Training took {:} (h:mm:ss) \n".format(utils.format_time(time.time()-total_train_time)))
+	logging.info("Training took {:} (h:mm:ss) \n".format(format_time(time.time()-total_train_time)))
 	print("--------------------------------\n")
 
 	plt.plot(train_losses, label="Training loss")
@@ -324,9 +322,9 @@ def main():
 	test_loss, test_acc = evaluate(model, test_iterator, CRITERION)
 
 	logging.info(f'\nTest Loss: {test_loss:.3f} | Test Acc: {test_acc*100:.2f}%')
-	logging.info("Testing took {:} (h:mm:ss) \n".format(utils.format_time(time.time()-total_test_time)))
+	logging.info("Testing took {:} (h:mm:ss) \n".format(format_time(time.time()-total_test_time)))
 	print("--------------------------------\n")
-	logging.info("Total duration {:} (h:mm:ss) \n".format(utils.format_time(time.time()-program_st)))
+	logging.info("Total duration {:} (h:mm:ss) \n".format(format_time(time.time()-program_st)))
 	
 
 
