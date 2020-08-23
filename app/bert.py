@@ -307,7 +307,6 @@ def main():
 	plt.title("Losses")
 	plt.savefig(f"../results/bert_loss_e{args.epochs}.png")
 
-	logging.info(f"Training for {class_name} done.")
 	logging.info("Training took {:} (h:mm:ss) \n".format(utils.format_time(time.time()-total_t0)))
 	print("--------------------------------\n")
 

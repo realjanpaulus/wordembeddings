@@ -272,34 +272,56 @@ def main():
 
 	best_valid_loss = float('inf')
 
+	train_losses = []
+	val_losses = []
+	total_train_time = time.time()
 
 	for epoch in range(EPOCHS):
 
 		start_time = time.time()
 	  
 		train_loss, train_acc = train(model, train_iterator, OPTIMIZER, CRITERION)
-		valid_loss, valid_acc = evaluate(model, val_iterator, CRITERION)
+		val_loss, val_acc = evaluate(model, val_iterator, CRITERION)
+
+		train_losses.append(train_loss)
+		val_losses.append(val_loss)
 		
 		end_time = time.time()
 		epoch_mins, epoch_secs = epoch_time(start_time, end_time)
 		
 
-		if valid_loss < best_valid_loss:
-			best_valid_loss = valid_loss
+		if val_loss < best_valid_loss:
+			best_val_loss = val_loss
 			torch.save(model.state_dict(), output_file)
 		
 		logging.info(f'Epoch: {epoch+1:02} | Epoch Time: {epoch_mins}m {epoch_secs}s')
 		logging.info(f'\tTrain Loss: {train_loss:.3f} | Train Acc: {train_acc*100:.2f}%')
-		logging.info(f'\tVal. Loss: {valid_loss:.3f} |  Val. Acc: {valid_acc*100:.2f}%')
+		logging.info(f'\tVal. Loss: {val_loss:.3f} |  Val. Acc: {val_acc*100:.2f}%')
+
+
+	logging.info("Training took {:} (h:mm:ss) \n".format(utils.format_time(time.time()-total_train_time)))
+	print("--------------------------------\n")
+
+	plt.plot(train_losses, label="Training loss")
+	plt.plot(val_losses, label="Validation loss")
+	plt.legend()
+	plt.title("Losses")
+	plt.savefig(f"../results/{args.model}_loss_e{args.epochs}.png")
 
 	# ============
 	# Test model #
 	# ============
 
+	total_test_time = time.time()
 	model.load_state_dict(torch.load(output_file))
 	test_loss, test_acc = evaluate(model, test_iterator, CRITERION)
 
 	logging.info(f'\nTest Loss: {test_loss:.3f} | Test Acc: {test_acc*100:.2f}%')
+	logging.info("Testing took {:} (h:mm:ss) \n".format(utils.format_time(time.time()-total_test_time)))
+	print("--------------------------------\n")
+	logging.info("Total duration {:} (h:mm:ss) \n".format(utils.format_time(time.time()-program_st)))
+	
+
 
 
 if __name__ == "__main__":
