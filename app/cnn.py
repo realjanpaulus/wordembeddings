@@ -196,7 +196,7 @@ def main():
 
 
 	# for pt model
-	output_add = f'_e{EPOCHS}_bs{BATCH_SIZE}_mf{MAX_FEATURES}_emb{EMBEDDING_TYPE}'
+	output_add = f'_bs{BATCH_SIZE}_mf{MAX_FEATURES}_emb{EMBEDDING_TYPE}'
 	output_file = f'savefiles/cnnmodel{output_add}.pt'
 
 	if args.load_savefile:
