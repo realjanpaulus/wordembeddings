@@ -297,7 +297,7 @@ def main():
 		# ================
 
 
-		if utils.early_stopping(validation_losses, patience=2):
+		if utils.early_stopping(validation_losses, patience=args.patience):
 			logging.info(f"Stopping epoch run early (Epoch {epoch_i}).")
 			break
 

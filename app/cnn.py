@@ -274,6 +274,7 @@ def main():
 
 	train_losses = []
 	val_losses = []
+	val_losses_epochs = {}
 	total_train_time = time.time()
 
 	for epoch in range(EPOCHS):
@@ -285,6 +286,7 @@ def main():
 
 		train_losses.append(train_loss)
 		val_losses.append(val_loss)
+		val_losses_epochs[f"epoch{epoch}"] = val_loss
 		
 		end_time = time.time()
 		epoch_mins, epoch_secs = epoch_time(start_time, end_time)
@@ -297,6 +299,11 @@ def main():
 		logging.info(f'Epoch: {epoch+1:02} | Epoch Time: {epoch_mins}m {epoch_secs}s')
 		logging.info(f'\tTrain Loss: {train_loss:.3f} | Train Acc: {train_acc*100:.2f}%')
 		logging.info(f'\tVal. Loss: {val_loss:.3f} |  Val. Acc: {val_acc*100:.2f}%')
+
+
+		if utils.early_stopping(val_losses_epochs, patience=args.patience):
+			logging.info(f"Stopping epoch run early (Epoch {epoch}).")
+			break
 
 
 	logging.info("Training took {:} (h:mm:ss) \n".format(utils.format_time(time.time()-total_train_time)))
@@ -336,6 +343,7 @@ if __name__ == "__main__":
 	parser.add_argument("--load_savefile", "-lsf", action="store_true", help="Loads savefile as input NN.")
 	parser.add_argument("--max_features", "-mf", type=int, default=25000, help="Set the maximum size of vocabulary.")
 	parser.add_argument("--model", "-m", default="kimcnn", help="Indicates used cnn model: Available: 'standard', 'kimcnn'.")
+	parser.add_argument("--patience", "-p", type=int, default=3, help="Indicates patience for early stopping.")
 	
 	args = parser.parse_args()
 
