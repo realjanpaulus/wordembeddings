@@ -1,8 +1,6 @@
 CUDA_LAUNCH_BLOCKING="1"
 
 # TODO: 
-# - alles mit BERT rausschmeißen
-# - stattdessen word2vec integrieren
 # - alles überprüfen
 # - weitere embeddings
 # - passen die dimensionen?
@@ -59,6 +57,8 @@ def main():
 				   ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', 
 				   '{', '|', '}', '~', '`', '``']
 
+	# TODO
+	# stop_words = stopwords.words('english') + punctuation 
 
 	# =================
 	# hyperparamaters # 
@@ -71,8 +71,8 @@ def main():
 
 	FILTER_SIZES = [3,4,5]
 	LEARNING_RATE = args.learning_rate
-	MAX_VOCAB_SIZE = args.max_features
-	N_FILTERS = 3
+	MAX_FEATURES = args.max_features 
+	N_FILTERS = 100
 	
 	
 	# ============
@@ -81,15 +81,21 @@ def main():
 
 	EMBEDDING_TYPE = args.embedding_type
 	
-	if EMBEDDING_TYPE == "fasttext":
-		EMBEDDING_NAME = "fasttext.simple.300d"
+	if EMBEDDING_TYPE == "fasttext-en":
+		EMBEDDING_NAME = "fasttext.en.300d"
 		EMBEDDING_DIM = 300
-	elif EMBEDDING_TYPE == "glove":
-		EMBEDDING_NAME = "glove.6B.100d"
-		EMBEDDING_DIM = 100
-	elif EMBEDDING_TYPE == "word2vec":
-		EMBEDDING_NAME = "GoogleNews-vectors-negative300"
-		EMBEDDING_DIM = 100
+	elif EMBEDDING_TYPE == "fasttext-simple":
+		EMBEDDING_NAME = "fasttext.simple.300d"
+		EMBEDDING_DIM = 300	
+	elif EMBEDDING_TYPE == "glove-840":
+		EMBEDDING_NAME = "glove.840B.300d"
+		EMBEDDING_DIM = 300
+	elif EMBEDDING_TYPE == "glove-6":
+		EMBEDDING_NAME = "glove.6B.300d"
+		EMBEDDING_DIM = 300
+	elif EMBEDDING_TYPE == "glove-twitter":
+		EMBEDDING_NAME = "glove.twitter.27B.200d"
+		EMBEDDING_DIM = 200
 	else:	
 		EMBEDDING_NAME = "unknown"
 		EMBEDDING_DIM = 100
@@ -98,9 +104,7 @@ def main():
 	# preprocessing #
 	# ===============
 
-	# stop_words = stopwords.words('english') + punctuation 
-
-	
+		
 	TEXT = data.Field(tokenize = "toktok",
 						  lower = True)
 
@@ -117,15 +121,11 @@ def main():
 																 fields=assigned_fields,
 																 skip_header = True)
 
-	if EMBEDDING_TYPE == "word2vec":
-		TEXT.build_vocab(train_data)
-		vectors = get_word2vec(TEXT, path=f"embeddings/{EMBEDDING_NAME}.bin")
-	else:
-		vectors = ""
-		TEXT.build_vocab(train_data, 
-						 vectors = EMBEDDING_NAME, 
-						 unk_init = torch.Tensor.normal_,
-						 max_size = MAX_VOCAB_SIZE)
+	
+	TEXT.build_vocab(train_data, 
+					 vectors = EMBEDDING_NAME, 
+					 unk_init = torch.Tensor.normal_,
+					 max_size = MAX_FEATURES)
 	LABEL.build_vocab(train_data)
 
 	INPUT_DIM = len(TEXT.vocab)
@@ -164,7 +164,6 @@ def main():
 	logging.info(f"Number of filters: {N_FILTERS}")
 	logging.info(f"Filter sizes: {FILTER_SIZES}")
 	logging.info(f"Dropout: {DROPOUT}")
-
 	logging.info("#####################################")
 	print("\n")
 
@@ -176,27 +175,30 @@ def main():
 							  embedding_type = EMBEDDING_TYPE,
 							  n_filters = N_FILTERS, 
 							  filter_sizes = FILTER_SIZES, 
-							  dropout = DROPOUT,
-							  vectors = vectors)
+							  dropout = DROPOUT)
 
-		
+		OPTIMIZER = optim.Adadelta(model.parameters(), lr=LEARNING_RATE)
+		CRITERION = nn.CrossEntropyLoss()
 		
 	elif args.model == "dpcnn":
 		#todo: weiter
 		model = models.DPCNN(input_dim = INPUT_DIM,
 							 output_dim = OUTPUT_DIM, 
 							 embedding_dim = EMBEDDING_DIM)
+
+		#TODO? anderen optimizer?
+		OPTIMIZER = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+		CRITERION = nn.CrossEntropyLoss()
 	else:
 		logging.info(f"Model '{args.model}' does not exist. Script will be stopped.")
 		exit()
 
 
-	OPTIMIZER = optim.Adam(model.parameters(), lr=LEARNING_RATE)
-	CRITERION = nn.CrossEntropyLoss()
+	
 
 
 	# for pt model
-	output_add = f'_e{EPOCHS}_bs{BATCH_SIZE}_mf{MAX_VOCAB_SIZE}_emb{EMBEDDING_TYPE}'
+	output_add = f'_e{EPOCHS}_bs{BATCH_SIZE}_mf{MAX_FEATURES}_emb{EMBEDDING_TYPE}'
 	output_file = f'savefiles/cnnmodel{output_add}.pt'
 
 	if args.load_savefile:
@@ -227,7 +229,10 @@ def main():
 		
 		model.train() 
 		
+		i = 1 #todo
 		for batch in iterator:
+			print(f"Batch {i} of {len(iterator)}") #todo
+			i += 1 #todo
 			optimizer.zero_grad()
 			predictions = model(batch.text)
 			loss = criterion(predictions, batch.label)
@@ -303,9 +308,10 @@ def main():
 if __name__ == "__main__":
 	
 	parser = argparse.ArgumentParser(prog="cnn", description="CNN for sentiment analysis.")
-	parser.add_argument("--batch_size", "-bs", type=int, default=8, help="Indicates batch size.")
+	parser.add_argument("--batch_size", "-bs", type=int, default=16, help="Indicates batch size.")
 	parser.add_argument("--datapath", "-dp", default="../corpora/splits/", help="Indicates dataset path.")
-	parser.add_argument("--embedding_type", "-et", type=str, default="glove", help="Indicates embedding type. Possible values: 'fasttext', 'glove', 'word2vec'.")
+	parser.add_argument("--embedding_type", "-et", type=str, default="glove-6", help="Indicates embedding type. \
+		Possible values: 'fasttext-en', 'fasttext-simple', 'glove-840', 'glove-6', 'glove-twitter'.")
 	parser.add_argument("--epochs", "-e", type=int, default=10, help="Indicates number of epochs.")
 	parser.add_argument("--learning_rate", "-lr", type=float, default=0.001, help="Set learning rate for optimizer.")
 	parser.add_argument("--load_savefile", "-lsf", action="store_true", help="Loads savefile as input NN.")

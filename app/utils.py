@@ -98,23 +98,38 @@ def clean_text(text):
 	text = fix_contractions(text)
 	return text
 
-def random_downsampling(corpus, class_col = "rating", max_value = 300000):
+def random_downsampling(corpus, 
+						splitting = 5,
+						class_col = "rating", 
+						max_value = 15000):
 	""" Reduces all instances of all classes to a certain maximum value.
 	"""   
-	
-	corpus_1 = corpus[corpus[class_col] == 1.0]
-	corpus_2 = corpus[corpus[class_col] == 2.0]
-	corpus_3 = corpus[corpus[class_col] == 3.0]
-	corpus_4 = corpus[corpus[class_col] == 4.0]
-	corpus_5 = corpus[corpus[class_col] == 5.0]
-	
-	corpus_1 = corpus_1.sample(max_value)
-	corpus_2 = corpus_2.sample(max_value)
-	corpus_3 = corpus_3.sample(max_value)
-	corpus_4 = corpus_4.sample(max_value)
-	corpus_5 = corpus_5.sample(max_value)
+	if splitting == 5:
+		corpus_1 = corpus[corpus[class_col] == 1.0]
+		corpus_2 = corpus[corpus[class_col] == 2.0]
+		corpus_3 = corpus[corpus[class_col] == 3.0]
+		corpus_4 = corpus[corpus[class_col] == 4.0]
+		corpus_5 = corpus[corpus[class_col] == 5.0]
+		
+		corpus_1 = corpus_1.sample(max_value)
+		corpus_2 = corpus_2.sample(max_value)
+		corpus_3 = corpus_3.sample(max_value)
+		corpus_4 = corpus_4.sample(max_value)
+		corpus_5 = corpus_5.sample(max_value)
 
-	return pd.concat([corpus_1, corpus_2, corpus_3, corpus_4, corpus_5], axis=0)
+		return pd.concat([corpus_1, corpus_2, corpus_3, corpus_4, corpus_5], axis=0)
+	elif splitting == 3:
+		corpus["rating"] = corpus.rating.replace(2.0, 1.0)
+		corpus["rating"] = corpus.rating.replace(4.0, 5.0)
+		corpus_1 = corpus[corpus[class_col] == 1.0]
+		corpus_3 = corpus[corpus[class_col] == 3.0]
+		corpus_5 = corpus[corpus[class_col] == 5.0]
+		
+		corpus_1 = corpus_1.sample(max_value)
+		corpus_3 = corpus_3.sample(max_value)
+		corpus_5 = corpus_5.sample(max_value)
+
+		return pd.concat([corpus_1, corpus_3, corpus_5], axis=0)
 
 # ======================= #
 # neural network training #
@@ -149,20 +164,6 @@ def format_time(elapsed):
 	elapsed_rounded = int(round((elapsed)))
 	return str(datetime.timedelta(seconds=elapsed_rounded))
 
-
-def get_word2vec(text, path = 'embeddings/GoogleNews-vectors-negative300.bin'):
-	""" Get word2vec embeddings by path."""
-	vectors = []
-	word2vec = KeyedVectors.load_word2vec_format(path, binary=True)
-
-	for i in range(len(text.vocab)):
-		word = text.vocab.itos[i]
-		if word in word2vec.vocab:
-			vectors.append(word2vec[word])
-		else:
-			vectors.append(np.random.uniform(-0.01, 0.01, 100))
-
-	return np.array(vectors)
 
 def load_jsonl_to_df(path):
 	""" Create dataframe from a JSON lines file. """

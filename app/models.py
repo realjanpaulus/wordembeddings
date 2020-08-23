@@ -25,17 +25,13 @@ class KimCNN(nn.Module):
 	"""
 	def __init__(self, input_dim, output_dim, embedding_dim, 
 				 embedding_type, n_filters, filter_sizes, 
-				 dropout, vectors):
+				 dropout):
 		super(KimCNN, self).__init__()
 
 		self.in_channels = 1
 		self.embedding_dim = embedding_dim
 		self.embedding = nn.Embedding(input_dim, self.embedding_dim, padding_idx=1)
-
-		if vectors != "":
-			self.embedding.weight.data.copy_(torch.from_numpy(vectors))
 		self.embedding.weight.requires_grad = False
-
 		self.convs = nn.ModuleList([
 				nn.Conv1d(in_channels = self.in_channels,
 				  		  out_channels = n_filters, 
