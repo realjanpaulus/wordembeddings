@@ -270,7 +270,7 @@ def main():
 	# actual training #
 	# =================
 
-	best_valid_loss = float('inf')
+	best_val_loss = float('inf')
 
 	train_losses = []
 	val_losses = []
@@ -290,7 +290,7 @@ def main():
 		epoch_mins, epoch_secs = epoch_time(start_time, end_time)
 		
 
-		if val_loss < best_valid_loss:
+		if val_loss < best_val_loss:
 			best_val_loss = val_loss
 			torch.save(model.state_dict(), output_file)
 		
