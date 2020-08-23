@@ -200,7 +200,7 @@ def main():
 	output_file = f'savefiles/cnnmodel{output_add}.pt'
 
 	if args.load_savefile:
-		model = torch.load(output_file)
+		model.load_state_dict(torch.load(output_file))
 	
 
 	# load embeddings
