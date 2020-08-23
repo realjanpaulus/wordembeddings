@@ -229,10 +229,7 @@ def main():
 		
 		model.train() 
 		
-		i = 1 #todo
 		for batch in iterator:
-			print(f"Batch {i} of {len(iterator)}") #todo
-			i += 1 #todo
 			optimizer.zero_grad()
 			predictions = model(batch.text)
 			loss = criterion(predictions, batch.label)
