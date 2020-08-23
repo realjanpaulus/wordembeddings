@@ -55,8 +55,6 @@ def main():
 	# predefined parameters #
 	# =======================
 
-	num_labels = 5
-
 	batch_size = args.batch_size
 	epochs = args.epochs
 	learning_rate = args.learning_rate
@@ -103,6 +101,8 @@ def main():
 	texts = train_data[text_name].values
 	encoder = LabelEncoder()
 	labels = encoder.fit_transform(train_data[class_name].values)
+
+	num_labels = len(np.unique(labels))
 
 	X_val = val_data[text_name].values
 	y_val = LabelEncoder().fit_transform(val_data[class_name].values)
