@@ -288,8 +288,8 @@ def main():
 	plt.plot(train_losses, label="Training loss")
 	plt.plot(val_losses, label="Validation loss")
 	plt.legend()
-	plt.title("Losses")
-	plt.savefig(f"../results/{args.model}_loss_e{args.epochs}.png")
+	plt.title(f"Losses (until epoch {epoch})")
+	plt.savefig(f"../results/{args.model}_loss_{args.embedding_type}_{args.splitnumber}_bs{args.batch_size}_mf{args.max_features}_lr{args.learning_rate}.png")
 
 	# ============
 	# Test model #
@@ -301,7 +301,7 @@ def main():
 
 
 	test_output = f'\nTest Loss: {test_loss:.3f} | Test Acc: {test_acc*100:.2f}%'
-	test_outputfile = f"../results/{args.embedding_type}_{args.splitnumber}.txt"
+	test_outputfile = f"../results/{args.embedding_type}_{args.splitnumber}_bs{args.batch_size}_mf{args.max_features}_lr{args.learning_rate}.txt"
 
 	with open(test_outputfile, "w") as txtfile:
 		txtfile.write(f"Last epoch: {epoch}{test_output}")
@@ -325,7 +325,7 @@ if __name__ == "__main__":
 	parser.add_argument("--learning_rate", "-lr", type=float, default=0.001, help="Set learning rate for optimizer.")
 	parser.add_argument("--load_savefile", "-lsf", action="store_true", help="Loads savefile as input NN.")
 	parser.add_argument("--max_features", "-mf", type=int, default=25000, help="Set the maximum size of vocabulary.")
-	parser.add_argument("--model", "-m", default="kimcnn", help="Indicates used cnn model: Available: 'standard', 'kimcnn'.")
+	parser.add_argument("--model", "-m", default="kimcnn", help="Indicates used cnn model: Available: 'kimcnn'.")
 	parser.add_argument("--patience", "-p", type=int, default=3, help="Indicates patience for early stopping.")
 	parser.add_argument("--splitnumber", "-sn", type=int, default=1, help="Indicates split number, e.g. train2.")
 

@@ -23,11 +23,6 @@ def main():
 	logging.info("Starting optimization.")
 	batch_sizes = [50, 128]
 	learning_rates = [0.1, 0.001, 0.0001]
-	max_features = [25000, 50000]
-	split_numbers = [1, 2, 3]
-
-	
-
 	if args.embedding_type == "fasttext":
 		embeddings = ['fasttext-en', 'fasttext-simple'] 
 	elif args.embedding_type == "glove":
@@ -35,9 +30,13 @@ def main():
 	else:
 		logging.info(f"Embedding type '{args.embedding_type}' is unknown.")
 		exit()
+	max_features = [25000, 50000]
+	split_numbers = [1, 2, 3]
 
-	cartesian_inputs = list(product(batch_sizes, learning_rates, 
-									embeddings, max_features,
+	cartesian_inputs = list(product(batch_sizes, 
+									learning_rates, 
+									embeddings, 
+									max_features,
 									split_numbers))
 
 	
