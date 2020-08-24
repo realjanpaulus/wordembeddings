@@ -7,6 +7,7 @@ TODOS:
 - bert embeddings, fasttext, glove embeddings hinzufügen
 - mehr models in models.py?
 - svm testen?
+- run.py erstellen
 - Training:
 	- BERT Training fertig machen
 	- KimCNN Training fertig machen

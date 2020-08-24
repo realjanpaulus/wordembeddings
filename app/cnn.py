@@ -1,10 +1,4 @@
 CUDA_LAUNCH_BLOCKING="1"
-
-# TODO: 
-# - alles überprüfen
-#   selbstgebautes netz hinzufügen?!
-
-
 import argparse
 import logging
 from nltk import word_tokenize
@@ -53,9 +47,7 @@ def main():
 	punctuation = ['!', '#','$','%','&', "'", '(',')','*', '+', ',', '-', '.', '/', 
 				   ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', 
 				   '{', '|', '}', '~', '`', '``']
-
-	# TODO
-	# stop_words = stopwords.words('english') + punctuation 
+ 
 
 	# =================
 	# hyperparamaters # 
@@ -111,9 +103,9 @@ def main():
 					   "rating": ('label', LABEL)}
 	
 	train_data, val_data, test_data = data.TabularDataset.splits(path=DATA_PATH, 
-																 train='train.json',
-																 validation='val.json', 
-																 test='test.json', 
+																 train=f'train{args.splitnumber}.json',
+																 validation=f'val{args.splitnumber}.json', 
+																 test=f'test{args.splitnumber}.json', 
 																 format='json',
 																 fields=assigned_fields,
 																 skip_header = True)
@@ -176,23 +168,9 @@ def main():
 
 		OPTIMIZER = optim.Adadelta(model.parameters(), lr=LEARNING_RATE)
 		CRITERION = nn.CrossEntropyLoss()
-		
-	elif args.model == "dpcnn":
-		#todo: weiter
-		model = models.DPCNN(input_dim = INPUT_DIM,
-							 output_dim = OUTPUT_DIM, 
-							 embedding_dim = EMBEDDING_DIM,
-							 n_filters = 250)
-
-		#TODO? anderen optimizer?
-		OPTIMIZER = optim.Adam(model.parameters(), lr=LEARNING_RATE)
-		CRITERION = nn.CrossEntropyLoss()
 	else:
 		logging.info(f"Model '{args.model}' does not exist. Script will be stopped.")
 		exit()
-
-
-	
 
 
 	# for pt model
@@ -321,7 +299,14 @@ def main():
 	model.load_state_dict(torch.load(output_file))
 	test_loss, test_acc = evaluate(model, test_iterator, CRITERION)
 
-	logging.info(f'\nTest Loss: {test_loss:.3f} | Test Acc: {test_acc*100:.2f}%')
+
+	test_output = f'\nTest Loss: {test_loss:.3f} | Test Acc: {test_acc*100:.2f}%'
+	test_outputfile = f"../results/{args.embedding_type}_{args.splitnumber}.txt"
+
+	with open(test_outputfile, "w") as txtfile:
+		txtfile.write(f"Last epoch: {epoch}{test_output}")
+
+	logging.info(test_output)
 	logging.info("Testing took {:} (h:mm:ss) \n".format(format_time(time.time()-total_test_time)))
 	print("--------------------------------\n")
 	logging.info("Total duration {:} (h:mm:ss) \n".format(format_time(time.time()-program_st)))
@@ -332,17 +317,18 @@ def main():
 if __name__ == "__main__":
 	
 	parser = argparse.ArgumentParser(prog="cnn", description="CNN for sentiment analysis.")
-	parser.add_argument("--batch_size", "-bs", type=int, default=16, help="Indicates batch size.")
+	parser.add_argument("--batch_size", "-bs", type=int, default=50, help="Indicates batch size.")
 	parser.add_argument("--datapath", "-dp", default="../corpora/splits/", help="Indicates dataset path.")
 	parser.add_argument("--embedding_type", "-et", type=str, default="glove-6", help="Indicates embedding type. \
 		Possible values: 'fasttext-en', 'fasttext-simple', 'glove-840', 'glove-6', 'glove-twitter'.")
-	parser.add_argument("--epochs", "-e", type=int, default=10, help="Indicates number of epochs.")
+	parser.add_argument("--epochs", "-e", type=int, default=500, help="Indicates number of epochs.")
 	parser.add_argument("--learning_rate", "-lr", type=float, default=0.001, help="Set learning rate for optimizer.")
 	parser.add_argument("--load_savefile", "-lsf", action="store_true", help="Loads savefile as input NN.")
 	parser.add_argument("--max_features", "-mf", type=int, default=25000, help="Set the maximum size of vocabulary.")
 	parser.add_argument("--model", "-m", default="kimcnn", help="Indicates used cnn model: Available: 'standard', 'kimcnn'.")
 	parser.add_argument("--patience", "-p", type=int, default=3, help="Indicates patience for early stopping.")
-	
+	parser.add_argument("--splitnumber", "-sn", type=int, default=1, help="Indicates split number, e.g. train2.")
+
 	args = parser.parse_args()
 
 	main()
