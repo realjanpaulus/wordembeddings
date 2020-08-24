@@ -22,7 +22,7 @@ def main():
 
 	logging.info("Starting optimization.")
 	batch_sizes = [50, 128]
-	learning_rates = [0.1, 0.001, 0.0001]
+	learning_rates = [0.01, 0.001]
 	if args.embedding_type == "fasttext":
 		embeddings = ['fasttext-en', 'fasttext-simple'] 
 	elif args.embedding_type == "glove":
