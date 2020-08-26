@@ -87,7 +87,7 @@ def main():
 		EMBEDDING_DIM = 200
 	else:	
 		EMBEDDING_NAME = "unknown"
-		EMBEDDING_DIM = 100
+		EMBEDDING_DIM = 300
 
 	# ===============
 	# preprocessing #

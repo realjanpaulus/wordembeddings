@@ -3,6 +3,9 @@ import argparse
 from datetime import datetime
 import logging
 import numpy as np
+from nltk.corpus import stopwords
+punctuation = ['!', '#','$','%','&', "'", '(',')','*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', 
+               '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~', '`', '``']
 import pandas as pd
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -31,10 +34,20 @@ def main():
 	# predefined parameters #
 	# =======================
 
+	if args.stopwords:
+		stop_words = stopwords.words('english') + punctuation
+		logging_filename = f"../logs/{args.model}_removed_sw.log"
+		results_file = f"../results/{args.model}_removed_sw.txt"
+	else:
+		stop_words = None
+		logging_filename = f"../logs/{args.model}.log"
+		results_file = f"../results/{args.model}.txt"
+
 	n_jobs = args.n_jobs
 	cv = 3
-	vectorizer = TfidfVectorizer(lowercase=False,
-								 stop_words=None)
+
+	vectorizer = TfidfVectorizer(lowercase=True,
+								 stop_words=stop_words)
 
 	
 	corpus = pd.read_csv("../corpora/alter_small_amazon_reviews_electronic.csv")
@@ -49,7 +62,6 @@ def main():
 	# ================================
 	# classification logging handler #
 	# ================================
-	logging_filename = f"../logs/{args.model}.log"
 	logging.basicConfig(level=logging.DEBUG, filename=logging_filename, filemode="w")
 	console = logging.StreamHandler()
 	console.setLevel(logging.INFO)
@@ -107,7 +119,7 @@ def main():
 		acc = np.mean(cv_results['test_score'])
 		logging.info(f"Accuracy: {acc}")
 
-		with open("../results/svm.txt", "w") as txtfile:
+		with open(results_file, "w") as txtfile:
 			txtfile.write(f"Mean Accuracy: {acc}")
 	elif args.model == "lr":
 		pipe = Pipeline(steps=[("vect", vectorizer),
@@ -149,7 +161,7 @@ def main():
 		acc = np.mean(cv_results['test_score'])
 		logging.info(f"Accuracy: {acc}")
 
-		with open("../results/lr.txt", "w") as txtfile:
+		with open(results_file, "w") as txtfile:
 			txtfile.write(f"Mean Accuracy: {acc}")
 
 
@@ -166,6 +178,7 @@ if __name__ == "__main__":
 	parser.add_argument("--testing", "-t", action="store_true", 
 						help="Starts testing mode with a small subset of the corpus \
 						and less tunable parameters.")
+	parser.add_argument("--stopwords", "-sw", action="store_true", help="Uses stopwords removal.")
 	args = parser.parse_args()
 
 	main()
