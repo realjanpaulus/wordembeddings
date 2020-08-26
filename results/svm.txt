@@ -1,1 +1,1 @@
-Mean Accuracy: 0.46939988116458703
+Mean Accuracy: 0.7053777777777778

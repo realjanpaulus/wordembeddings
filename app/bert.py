@@ -401,8 +401,7 @@ if __name__ == "__main__":
 	parser.add_argument("--learning_rate", "-lr", type=float, default=2e-5, help="Set learning rate for optimizer.")
 	parser.add_argument("--max_length", "-ml", type=int, default=510, help="Indicates the maximum document length.")
 	parser.add_argument("--patience", "-p", type=int, default=3, help="Indicates patience for early stopping.")
-	parser.add_argument("--save_date", "-sd", action="store_true", help="Indicates if the creation date of the results should be saved.")
-	
+
 	args = parser.parse_args()
 
 	main()
