@@ -1,0 +1,2 @@
+Last epoch: 499
+Test Loss: 0.655 | Test Acc: 71.53%
