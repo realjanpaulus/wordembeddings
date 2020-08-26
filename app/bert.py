@@ -85,9 +85,9 @@ def main():
 
 	dir_path = args.datapath
 
-	train_data = utils.load_jsonl_to_df(f'{dir_path}train.json')
-	val_data = utils.load_jsonl_to_df(f'{dir_path}val.json')
-	test_data = utils.load_jsonl_to_df(f'{dir_path}test.json')
+	train_data = utils.load_jsonl_to_df(f'{dir_path}train{args.splitnumber}.json')
+	val_data = utils.load_jsonl_to_df(f'{dir_path}val{args.splitnumber}.json')
+	test_data = utils.load_jsonl_to_df(f'{dir_path}test{args.splitnumber}.json')
 
 
 	
@@ -401,6 +401,7 @@ if __name__ == "__main__":
 	parser.add_argument("--learning_rate", "-lr", type=float, default=2e-5, help="Set learning rate for optimizer.")
 	parser.add_argument("--max_length", "-ml", type=int, default=510, help="Indicates the maximum document length.")
 	parser.add_argument("--patience", "-p", type=int, default=3, help="Indicates patience for early stopping.")
+	parser.add_argument("--splitnumber", "-sn", type=int, default=1, help="Indicates split number, e.g. train2.")
 
 	args = parser.parse_args()
 

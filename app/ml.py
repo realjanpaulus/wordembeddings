@@ -49,7 +49,7 @@ def main():
 	# ================================
 	# classification logging handler #
 	# ================================
-	logging_filename = f"../logs/svm.log"
+	logging_filename = f"../logs/{args.model}.log"
 	logging.basicConfig(level=logging.DEBUG, filename=logging_filename, filemode="w")
 	console = logging.StreamHandler()
 	console.setLevel(logging.INFO)
