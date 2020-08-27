@@ -150,7 +150,7 @@ def early_stopping(d, patience=2):
 		else:
 			return False
 
-def flat_accuracy(preds, labels):
+def flat_accuracy(labels, preds):
 	pred_flat = np.argmax(preds, axis=1).flatten()
 	labels_flat = labels.flatten()
 	return np.sum(pred_flat == labels_flat) / len(labels_flat)
