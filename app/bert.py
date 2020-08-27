@@ -400,7 +400,7 @@ def main():
 if __name__ == "__main__":
 	
 	parser = argparse.ArgumentParser(prog="bertclf", description="Bert classifier.")
-	parser.add_argument("--batch_size", "-bs", type=int, default=2, help="Indicates batch size.")
+	parser.add_argument("--batch_size", "-bs", type=int, default=8, help="Indicates batch size.")
 	parser.add_argument("--datapath", "-dp", default="../corpora/splits/", help="Indicates dataset path.")
 	parser.add_argument("--epochs", "-e", type=int, default=10, help="Indicates number of epochs.")
 	parser.add_argument("--learning_rate", "-lr", type=float, default=2e-5, help="Set learning rate for optimizer.")
