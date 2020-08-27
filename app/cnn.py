@@ -9,6 +9,7 @@ import time
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 
 import torch
@@ -224,12 +225,15 @@ def main():
 	# =====================
 
 
-	def evaluate(model, iterator, criterion):
+	def evaluate(model, iterator, criterion, return_lists=False):
 	
 		epoch_loss = 0
 		epoch_acc = 0
 		
 		model.eval()
+
+		if return_lists:
+			pred_labels, true_labels = [], []
 		
 		with torch.no_grad():
 			for batch in iterator:
@@ -239,8 +243,15 @@ def main():
 
 				epoch_loss += loss.item()
 				epoch_acc += acc.item()
-			
-		return epoch_loss / len(iterator), epoch_acc / len(iterator)
+
+				if return_lists:
+					pred_labels.append(predictions)
+					true_labels.append(batch.label)
+		
+		if return_lists:
+			return epoch_loss / len(iterator), epoch_acc / len(iterator), pred_labels, true_labels
+		else:
+			return epoch_loss / len(iterator), epoch_acc / len(iterator)
 
 	# =================
 	# actual training #
@@ -297,7 +308,24 @@ def main():
 
 	total_test_time = time.time()
 	model.load_state_dict(torch.load(output_file))
-	test_loss, test_acc = evaluate(model, test_iterator, CRITERION)
+
+	if args.save_confusion_matrices:
+		test_loss, test_acc, pred_labels, true_labels = evaluate(model, test_iterator, CRITERION, return_lists=True)
+
+		flat_predictions = np.concatenate(pred_labels, axis=0)
+		flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
+		flat_true_labels = np.concatenate(true_labels, axis=0)
+
+
+		logging.info("Saving confusion matrices.")
+		testd_ = load_jsonl_to_df(f"{args.datapath}/test{args.splitnumber}.json")
+		classes = testd_["rating"].drop_duplicates().tolist()
+
+		cm_df = pd.DataFrame(confusion_matrix(flat_true_labels, flat_predictions), index=classes, columns=classes)
+		cm_df.to_csv(f"../results/cm_{args.embedding_type}_{args.splitnumber}_bs{args.batch_size}_mf{args.max_features}_lr{args.learning_rate}.csv")
+
+	else:
+		test_loss, test_acc = evaluate(model, test_iterator, CRITERION)
 
 
 	test_output = f'\nTest Loss: {test_loss:.3f} | Test Acc: {test_acc*100:.2f}%'
@@ -327,6 +355,7 @@ if __name__ == "__main__":
 	parser.add_argument("--max_features", "-mf", type=int, default=25000, help="Set the maximum size of vocabulary.")
 	parser.add_argument("--model", "-m", default="kimcnn", help="Indicates used cnn model: Available: 'kimcnn'.")
 	parser.add_argument("--patience", "-p", type=int, default=3, help="Indicates patience for early stopping.")
+	parser.add_argument("--save_confusion_matrices", "-scm", action="store_true", help="Indicates if confusion matrices should be saved." )
 	parser.add_argument("--splitnumber", "-sn", type=int, default=1, help="Indicates split number, e.g. train2.")
 
 	args = parser.parse_args()

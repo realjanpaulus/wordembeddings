@@ -372,11 +372,16 @@ def main():
 		true_labels.append(label_ids)
 
 
-	
-
 	flat_predictions = np.concatenate(predictions, axis=0)
 	flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 	flat_true_labels = np.concatenate(true_labels, axis=0)
+
+	
+	if args.save_confusion_matrices:
+		logging.info("Saving confusion matrices.")
+		classes = test_data[class_name].drop_duplicates().tolist()
+		cm_df = pd.DataFrame(confusion_matrix(flat_true_labels, flat_predictions), index=classes, columns=classes)
+		cm_df.to_csv(f"../results/cm_bert_{args.splitnumber}_lr{args.learning_rate}.csv")
 
 	
 	test_score = accuracy_score(flat_true_labels, flat_predictions)
@@ -406,7 +411,8 @@ if __name__ == "__main__":
 	parser.add_argument("--learning_rate", "-lr", type=float, default=2e-5, help="Set learning rate for optimizer.")
 	parser.add_argument("--max_length", "-ml", type=int, default=510, help="Indicates the maximum document length.")
 	parser.add_argument("--model", "-m", type=str, default="bert-base-uncased", help="Indicates the pretrained model.")
-	parser.add_argument("--patience", "-p", type=int, default=3, help="Indicates patience for early stopping.")
+	parser.add_argument("--patience", "-p", type=int, default=2, help="Indicates patience for early stopping.")
+	parser.add_argument("--save_confusion_matrices", "-scm", action="store_true", help="Indicates if confusion matrices should be saved." )
 	parser.add_argument("--splitnumber", "-sn", type=int, default=1, help="Indicates split number, e.g. train2.")
 
 	args = parser.parse_args()
