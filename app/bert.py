@@ -60,7 +60,7 @@ def main():
 	learning_rate = args.learning_rate
 	max_length = args.max_length
 
-	model_name = "bert-large-uncased"
+	model_name = args.model
 
 	class_name = "rating"
 	text_name = "review"
@@ -298,7 +298,7 @@ def main():
 
 
 		if utils.early_stopping(validation_losses, patience=args.patience):
-			logging.info(f"Stopping epoch run early (Epoch {epoch_i}).")
+			logging.info(f"\nStopping epoch run early (Epoch {epoch_i}).")
 			break
 
 	plt.plot(train_losses, label="Training loss")
@@ -400,6 +400,7 @@ if __name__ == "__main__":
 	parser.add_argument("--epochs", "-e", type=int, default=10, help="Indicates number of epochs.")
 	parser.add_argument("--learning_rate", "-lr", type=float, default=2e-5, help="Set learning rate for optimizer.")
 	parser.add_argument("--max_length", "-ml", type=int, default=510, help="Indicates the maximum document length.")
+	parser.add_argument("--model", "-m", type=str, default="bert-base-uncased", help="Indicates the pretrained model.")
 	parser.add_argument("--patience", "-p", type=int, default=3, help="Indicates patience for early stopping.")
 	parser.add_argument("--splitnumber", "-sn", type=int, default=1, help="Indicates split number, e.g. train2.")
 
