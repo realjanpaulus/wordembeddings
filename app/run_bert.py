@@ -35,6 +35,10 @@ def main():
 		print("--------------------------------------------")
 
 		command = f"python bert.py -lr {t[0]} -sn {t[1]}"
+
+		if args.save_confusion_matrices:
+			command += " -scm"
+
 		subprocess.call(["bash", "-c", command])
 		print("\n")
 	program_duration = float(time.time() - program_st)
@@ -46,6 +50,7 @@ if __name__ == "__main__":
 	
 	parser = argparse.ArgumentParser(prog="run_bert", description="Runs bert script with multiple arguments.")
 	parser.add_argument("--epochs", "-e", type=int, default=10, help="Indicates number of epochs.")
+	parser.add_argument("--save_confusion_matrices", "-scm", action="store_true", help="Indicates if confusion matrices should be saved." )
 	args = parser.parse_args()
 
 	main()
