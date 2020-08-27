@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from sklearn.metrics import confusion_matrix, f1_score 
+from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import cross_val_score, cross_validate, StratifiedKFold, train_test_split
 from sklearn.preprocessing import LabelEncoder
 
@@ -268,7 +268,7 @@ def main():
 			logits = logits.detach().cpu().numpy()
 			label_ids = b_labels.to('cpu').numpy()
 
-			total_eval_accuracy += utils.flat_f1(label_ids, logits)
+			total_eval_accuracy += utils.flat_accuracy(label_ids, logits)
 			
 
 		# final validation accuracy / loss
@@ -379,8 +379,13 @@ def main():
 	flat_true_labels = np.concatenate(true_labels, axis=0)
 
 	
-	test_score = f1_score(flat_true_labels, flat_predictions, average="macro")		
-	classes = test_data[class_name].drop_duplicates().tolist()
+	test_score = accuracy_score(flat_true_labels, flat_predictions)
+	test_outputfile = f"../results/{args.model}_{args.splitnumber}_bs{args.batch_size}_lr{args.learning_rate}.txt"
+
+	with open(test_outputfile, "w") as txtfile:
+		txtfile.write(f"{test_score}")
+
+
 
 	logging.info(f"Test score: {np.around(test_score, decimals=4)}")
 	logging.info("Training took {:} (h:mm:ss)".format(utils.format_time(time.time()-total_t0)))
