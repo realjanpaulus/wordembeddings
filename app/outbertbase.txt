@@ -1,0 +1,234 @@
+2020-08-27 09:38:11.545853: W tensorflow/stream_executor/platform/default/dso_loader.cc:59] Could not load dynamic library 'libcudart.so.10.1'; dlerror: libcudart.so.10.1: cannot open shared object file: No such file or directory
+2020-08-27 09:38:11.545901: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+INFO: There are 1 GPU(s) available.
+INFO: Used GPU: GeForce RTX 2080 Ti
+INFO: loading file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-vocab.txt from cache at /home/paulus/.cache/torch/transformers/26bc1ad6c0ac742e9b52263248f6d0f00068293b33709fae12320c0e35ccfbbb.542ce4285a40d23a559526243235df47c5f75c197f04f37d1a0c124c32c9a084
+INFO: loading configuration file https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-uncased-config.json from cache at /home/paulus/.cache/torch/transformers/4dad0251492946e18ac39290fcfe91b89d370fee250efe9521476438fe8ca185.7156163d5fdc189c3016baca0775ffce230789d7fa2a42ef516483e4ca884517
+INFO: Model config BertConfig {
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "id2label": {
+    "0": "LABEL_0",
+    "1": "LABEL_1",
+    "2": "LABEL_2"
+  },
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "label2id": {
+    "LABEL_0": 0,
+    "LABEL_1": 1,
+    "LABEL_2": 2
+  },
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "type_vocab_size": 2,
+  "vocab_size": 30522
+}
+
+INFO: loading weights file https://cdn.huggingface.co/bert-base-uncased-pytorch_model.bin from cache at /home/paulus/.cache/torch/transformers/f2ee78bdd635b758cc0a12352586868bef80e47401abe4c4fcc3832421e7338b.36ca03ab34a1a5d5fa7bc3d03d55c4fa650fed07220e2eeebc06ce58d0e9a157
+WARNING: Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertForSequenceClassification: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPretraining model).
+- This IS NOT expected if you are initializing BertForSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+WARNING: Some weights of BertForSequenceClassification were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['classifier.weight', 'classifier.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+
+======== Epoch 1 / 10 ========
+Now Training.
+Batch    50  of  4,500.    Elapsed: 0:00:23.
+Batch   100  of  4,500.    Elapsed: 0:00:39.
+Batch   150  of  4,500.    Elapsed: 0:00:55.
+Batch   200  of  4,500.    Elapsed: 0:01:11.
+Batch   250  of  4,500.    Elapsed: 0:01:28.
+Batch   300  of  4,500.    Elapsed: 0:01:44.
+Batch   350  of  4,500.    Elapsed: 0:02:00.
+Batch   400  of  4,500.    Elapsed: 0:02:17.
+Batch   450  of  4,500.    Elapsed: 0:02:33.
+Batch   500  of  4,500.    Elapsed: 0:02:49.
+Batch   550  of  4,500.    Elapsed: 0:03:06.
+Batch   600  of  4,500.    Elapsed: 0:03:22.
+Batch   650  of  4,500.    Elapsed: 0:03:39.
+Batch   700  of  4,500.    Elapsed: 0:03:55.
+Batch   750  of  4,500.    Elapsed: 0:04:12.
+Batch   800  of  4,500.    Elapsed: 0:04:28.
+Batch   850  of  4,500.    Elapsed: 0:04:45.
+Batch   900  of  4,500.    Elapsed: 0:05:01.
+Batch   950  of  4,500.    Elapsed: 0:05:18.
+Batch 1,000  of  4,500.    Elapsed: 0:05:34.
+Batch 1,050  of  4,500.    Elapsed: 0:05:51.
+Batch 1,100  of  4,500.    Elapsed: 0:06:07.
+Batch 1,150  of  4,500.    Elapsed: 0:06:24.
+Batch 1,200  of  4,500.    Elapsed: 0:06:40.
+Batch 1,250  of  4,500.    Elapsed: 0:06:57.
+Batch 1,300  of  4,500.    Elapsed: 0:07:13.
+Batch 1,350  of  4,500.    Elapsed: 0:07:30.
+Batch 1,400  of  4,500.    Elapsed: 0:07:46.
+Batch 1,450  of  4,500.    Elapsed: 0:08:03.
+Batch 1,500  of  4,500.    Elapsed: 0:08:19.
+Batch 1,550  of  4,500.    Elapsed: 0:08:36.
+Batch 1,600  of  4,500.    Elapsed: 0:08:52.
+Batch 1,650  of  4,500.    Elapsed: 0:09:09.
+Batch 1,700  of  4,500.    Elapsed: 0:09:25.
+Batch 1,750  of  4,500.    Elapsed: 0:09:42.
+Batch 1,800  of  4,500.    Elapsed: 0:09:58.
+Batch 1,850  of  4,500.    Elapsed: 0:10:15.
+Batch 1,900  of  4,500.    Elapsed: 0:10:31.
+Batch 1,950  of  4,500.    Elapsed: 0:10:48.
+Batch 2,000  of  4,500.    Elapsed: 0:11:04.
+Batch 2,050  of  4,500.    Elapsed: 0:11:21.
+Batch 2,100  of  4,500.    Elapsed: 0:11:37.
+Batch 2,150  of  4,500.    Elapsed: 0:11:54.
+Batch 2,200  of  4,500.    Elapsed: 0:12:10.
+Batch 2,250  of  4,500.    Elapsed: 0:12:27.
+Batch 2,300  of  4,500.    Elapsed: 0:12:43.
+Batch 2,350  of  4,500.    Elapsed: 0:13:00.
+Batch 2,400  of  4,500.    Elapsed: 0:13:16.
+Batch 2,450  of  4,500.    Elapsed: 0:13:33.
+Batch 2,500  of  4,500.    Elapsed: 0:13:49.
+Batch 2,550  of  4,500.    Elapsed: 0:14:06.
+Batch 2,600  of  4,500.    Elapsed: 0:14:22.
+Batch 2,650  of  4,500.    Elapsed: 0:14:39.
+Batch 2,700  of  4,500.    Elapsed: 0:14:55.
+Batch 2,750  of  4,500.    Elapsed: 0:15:12.
+Batch 2,800  of  4,500.    Elapsed: 0:15:28.
+Batch 2,850  of  4,500.    Elapsed: 0:15:44.
+Batch 2,900  of  4,500.    Elapsed: 0:16:01.
+Batch 2,950  of  4,500.    Elapsed: 0:16:17.
+Batch 3,000  of  4,500.    Elapsed: 0:16:34.
+Batch 3,050  of  4,500.    Elapsed: 0:16:51.
+Batch 3,100  of  4,500.    Elapsed: 0:17:07.
+Batch 3,150  of  4,500.    Elapsed: 0:17:24.
+Batch 3,200  of  4,500.    Elapsed: 0:17:40.
+Batch 3,250  of  4,500.    Elapsed: 0:17:57.
+Batch 3,300  of  4,500.    Elapsed: 0:18:13.
+Batch 3,350  of  4,500.    Elapsed: 0:18:30.
+Batch 3,400  of  4,500.    Elapsed: 0:18:46.
+Batch 3,450  of  4,500.    Elapsed: 0:19:03.
+Batch 3,500  of  4,500.    Elapsed: 0:19:19.
+Batch 3,550  of  4,500.    Elapsed: 0:19:36.
+Batch 3,600  of  4,500.    Elapsed: 0:19:52.
+Batch 3,650  of  4,500.    Elapsed: 0:20:09.
+Batch 3,700  of  4,500.    Elapsed: 0:20:25.
+Batch 3,750  of  4,500.    Elapsed: 0:20:42.
+Batch 3,800  of  4,500.    Elapsed: 0:20:58.
+Batch 3,850  of  4,500.    Elapsed: 0:21:15.
+Batch 3,900  of  4,500.    Elapsed: 0:21:31.
+Batch 3,950  of  4,500.    Elapsed: 0:21:48.
+Batch 4,000  of  4,500.    Elapsed: 0:22:04.
+Batch 4,050  of  4,500.    Elapsed: 0:22:21.
+Batch 4,100  of  4,500.    Elapsed: 0:22:37.
+Batch 4,150  of  4,500.    Elapsed: 0:22:54.
+Batch 4,200  of  4,500.    Elapsed: 0:23:10.
+Batch 4,250  of  4,500.    Elapsed: 0:23:27.
+Batch 4,300  of  4,500.    Elapsed: 0:23:43.
+Batch 4,350  of  4,500.    Elapsed: 0:24:00.
+Batch 4,400  of  4,500.    Elapsed: 0:24:16.
+Batch 4,450  of  4,500.    Elapsed: 0:24:33.
+
+  Average training loss: 0.62
+  Training epoch took: 0:24:49
+
+Now Validating.
+  Validation Accuracy: 0.71
+  Validation Loss: 0.56
+  Validation took: 0:00:58
+
+======== Epoch 2 / 10 ========
+Now Training.
+Batch    50  of  4,500.    Elapsed: 0:00:17.
+Batch   100  of  4,500.    Elapsed: 0:00:33.
+Batch   150  of  4,500.    Elapsed: 0:00:50.
+Batch   200  of  4,500.    Elapsed: 0:01:06.
+Batch   250  of  4,500.    Elapsed: 0:01:23.
+Batch   300  of  4,500.    Elapsed: 0:01:39.
+Batch   350  of  4,500.    Elapsed: 0:01:56.
+Batch   400  of  4,500.    Elapsed: 0:02:12.
+Batch   450  of  4,500.    Elapsed: 0:02:28.
+Batch   500  of  4,500.    Elapsed: 0:02:45.
+Batch   550  of  4,500.    Elapsed: 0:03:01.
+Batch   600  of  4,500.    Elapsed: 0:03:18.
+Batch   650  of  4,500.    Elapsed: 0:03:35.
+Batch   700  of  4,500.    Elapsed: 0:03:51.
+Batch   750  of  4,500.    Elapsed: 0:04:08.
+Batch   800  of  4,500.    Elapsed: 0:04:24.
+Batch   850  of  4,500.    Elapsed: 0:04:41.
+Batch   900  of  4,500.    Elapsed: 0:04:57.
+Batch   950  of  4,500.    Elapsed: 0:05:14.
+Batch 1,000  of  4,500.    Elapsed: 0:05:30.
+Batch 1,050  of  4,500.    Elapsed: 0:05:47.
+Batch 1,100  of  4,500.    Elapsed: 0:06:03.
+Batch 1,150  of  4,500.    Elapsed: 0:06:19.
+Batch 1,200  of  4,500.    Elapsed: 0:06:36.
+Batch 1,250  of  4,500.    Elapsed: 0:06:53.
+Batch 1,300  of  4,500.    Elapsed: 0:07:10.
+Batch 1,350  of  4,500.    Elapsed: 0:07:26.
+Batch 1,400  of  4,500.    Elapsed: 0:07:43.
+Batch 1,450  of  4,500.    Elapsed: 0:07:59.
+Batch 1,500  of  4,500.    Elapsed: 0:08:16.
+Batch 1,550  of  4,500.    Elapsed: 0:08:32.
+Batch 1,600  of  4,500.    Elapsed: 0:08:49.
+Batch 1,650  of  4,500.    Elapsed: 0:09:05.
+Batch 1,700  of  4,500.    Elapsed: 0:09:22.
+Batch 1,750  of  4,500.    Elapsed: 0:09:38.
+Batch 1,800  of  4,500.    Elapsed: 0:09:54.
+Batch 1,850  of  4,500.    Elapsed: 0:10:11.
+Batch 1,900  of  4,500.    Elapsed: 0:10:27.
+Batch 1,950  of  4,500.    Elapsed: 0:10:44.
+Batch 2,000  of  4,500.    Elapsed: 0:11:00.
+Batch 2,050  of  4,500.    Elapsed: 0:11:17.
+Batch 2,100  of  4,500.    Elapsed: 0:11:33.
+Batch 2,150  of  4,500.    Elapsed: 0:11:49.
+Batch 2,200  of  4,500.    Elapsed: 0:12:06.
+Batch 2,250  of  4,500.    Elapsed: 0:12:22.
+Batch 2,300  of  4,500.    Elapsed: 0:12:39.
+Batch 2,350  of  4,500.    Elapsed: 0:12:55.
+Batch 2,400  of  4,500.    Elapsed: 0:13:12.
+Batch 2,450  of  4,500.    Elapsed: 0:13:28.
+Batch 2,500  of  4,500.    Elapsed: 0:13:44.
+Batch 2,550  of  4,500.    Elapsed: 0:14:01.
+Batch 2,600  of  4,500.    Elapsed: 0:14:17.
+Batch 2,650  of  4,500.    Elapsed: 0:14:33.
+Batch 2,700  of  4,500.    Elapsed: 0:14:50.
+Batch 2,750  of  4,500.    Elapsed: 0:15:06.
+Batch 2,800  of  4,500.    Elapsed: 0:15:22.
+Batch 2,850  of  4,500.    Elapsed: 0:15:39.
+Batch 2,900  of  4,500.    Elapsed: 0:15:55.
+Batch 2,950  of  4,500.    Elapsed: 0:16:12.
+Batch 3,000  of  4,500.    Elapsed: 0:16:28.
+Batch 3,050  of  4,500.    Elapsed: 0:16:44.
+Batch 3,100  of  4,500.    Elapsed: 0:17:01.
+Batch 3,150  of  4,500.    Elapsed: 0:17:17.
+Batch 3,200  of  4,500.    Elapsed: 0:17:33.
+Batch 3,250  of  4,500.    Elapsed: 0:17:50.
+Batch 3,300  of  4,500.    Elapsed: 0:18:07.
+Batch 3,350  of  4,500.    Elapsed: 0:18:24.
+Batch 3,400  of  4,500.    Elapsed: 0:18:41.
+Batch 3,450  of  4,500.    Elapsed: 0:18:57.
+Batch 3,500  of  4,500.    Elapsed: 0:19:14.
+Batch 3,550  of  4,500.    Elapsed: 0:19:31.
+Batch 3,600  of  4,500.    Elapsed: 0:19:48.
+Batch 3,650  of  4,500.    Elapsed: 0:20:05.
+Batch 3,700  of  4,500.    Elapsed: 0:20:21.
+Batch 3,750  of  4,500.    Elapsed: 0:20:38.
+Batch 3,800  of  4,500.    Elapsed: 0:20:55.
+Batch 3,850  of  4,500.    Elapsed: 0:21:12.
+Batch 3,900  of  4,500.    Elapsed: 0:21:29.
+Batch 3,950  of  4,500.    Elapsed: 0:21:46.
+Batch 4,000  of  4,500.    Elapsed: 0:22:02.
+Batch 4,050  of  4,500.    Elapsed: 0:22:19.
+Batch 4,100  of  4,500.    Elapsed: 0:22:36.
+Batch 4,150  of  4,500.    Elapsed: 0:22:53.
+Batch 4,200  of  4,500.    Elapsed: 0:23:10.
+Batch 4,250  of  4,500.    Elapsed: 0:23:27.
+Batch 4,300  of  4,500.    Elapsed: 0:23:43.
+Batch 4,350  of  4,500.    Elapsed: 0:23:59.
+Batch 4,400  of  4,500.    Elapsed: 0:24:16.
