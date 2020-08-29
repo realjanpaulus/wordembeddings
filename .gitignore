@@ -136,6 +136,7 @@ app/embeddings/
 app/german_model.bin
 app/cc.en.300.bin
 app/old/
+app/outs/
 app/book/
 app/examples/
 app/.vector_cache/
