@@ -245,8 +245,10 @@ def main():
 				epoch_acc += acc.item()
 
 				if return_lists:
+					predictions = predictions.detach().cpu().numpy()
+					batch_labels = batch.label.to('cpu').numpy()
 					pred_labels.append(predictions)
-					true_labels.append(batch.label)
+					true_labels.append(batch_labels)
 		
 		if return_lists:
 			return epoch_loss / len(iterator), epoch_acc / len(iterator), pred_labels, true_labels
