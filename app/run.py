@@ -21,16 +21,32 @@ def main():
 	
 
 	logging.info("Starting optimization.")
-	batch_sizes = [50, 128]
-	learning_rates = [0.01, 0.001]
-	if args.embedding_type == "fasttext":
-		embeddings = ['fasttext-en', 'fasttext-simple'] 
-	elif args.embedding_type == "glove":
-		embeddings = ['glove-840', 'glove-6', 'glove-twitter']
+
+	if args.more_parameters:
+		batch_sizes = [128, 256]
+		if args.embedding_type == "fasttext":
+			embeddings = ['fasttext-en'] 
+		elif args.embedding_type == "glove":
+			embeddings = ['glove-840']
+		else:
+			logging.info(f"Embedding type '{args.embedding_type}' is unknown.")
+			exit()
+
+		learning_rates = [0.01, 0.05, 0.1]
+		max_features = [50000, 75000]
 	else:
-		logging.info(f"Embedding type '{args.embedding_type}' is unknown.")
-		exit()
-	max_features = [25000, 50000]
+		batch_sizes = [50, 128]
+		learning_rates = [0.01, 0.001]
+		if args.embedding_type == "fasttext":
+			embeddings = ['fasttext-en', 'fasttext-simple'] 
+		elif args.embedding_type == "glove":
+			embeddings = ['glove-840', 'glove-6', 'glove-twitter']
+		else:
+			logging.info(f"Embedding type '{args.embedding_type}' is unknown.")
+			exit()
+		max_features = [25000, 50000]
+
+
 	split_numbers = [1, 2, 3]
 
 	cartesian_inputs = list(product(batch_sizes, 
@@ -51,6 +67,9 @@ def main():
 		print("--------------------------------------------")
 
 		command = f"python cnn.py -bs {t[0]} -lr {t[1]} -et {t[2]} -mf {t[3]} -sn {t[4]} -e {args.epochs}"
+
+		if args.save_confusion_matrices:
+			command += " -scm"
 		subprocess.call(["bash", "-c", command])
 		print("\n")
 	program_duration = float(time.time() - program_st)
@@ -63,6 +82,9 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(prog="run", description="Runs cnn script with multiple arguments.")
 	parser.add_argument("--embedding_type", "-et", type=str, default="fasttext", help="Indicates embedding type. Possible values: 'fasttext', 'glove'.")
 	parser.add_argument("--epochs", "-e", type=int, default=500, help="Indicates number of epochs.")
+	parser.add_argument("--more_parameters", "-mp", action="store_true", help="Uses more hyperparameter for tuning.")
+	parser.add_argument("--save_confusion_matrices", "-scm", action="store_true", help="Indicates if confusion matrices should be saved." )
+	
 	args = parser.parse_args()
 
 	main()
