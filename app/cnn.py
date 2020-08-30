@@ -314,6 +314,7 @@ def main():
 	if args.save_confusion_matrices:
 		test_loss, test_acc, pred_labels, true_labels = evaluate(model, test_iterator, CRITERION, return_lists=True)
 
+
 		flat_predictions = np.concatenate(pred_labels, axis=0)
 		flat_predictions = np.argmax(flat_predictions, axis=1).flatten()
 		flat_true_labels = np.concatenate(true_labels, axis=0)
@@ -322,6 +323,13 @@ def main():
 		logging.info("Saving confusion matrices.")
 		testd_ = load_jsonl_to_df(f"{args.datapath}/test{args.splitnumber}.json")
 		classes = testd_["rating"].drop_duplicates().tolist()
+
+		wrong_ratings = []
+		for idx, (p, t) in enumerate(zip(flat_predictions, flat_true_labels)):
+			if p != t:
+				wrong_ratings.append(idx)
+		testd_ = testd_.drop(wrong_ratings)
+		testd_.to_csv("../results/misclassifications.csv")
 
 		cm_df = pd.DataFrame(confusion_matrix(flat_true_labels, flat_predictions), index=classes, columns=classes)
 		cm_df.to_csv(f"../results/cm_{args.embedding_type}_{args.splitnumber}_bs{args.batch_size}_mf{args.max_features}_lr{args.learning_rate}.csv")
