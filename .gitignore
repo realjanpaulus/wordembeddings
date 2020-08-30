@@ -136,8 +136,10 @@ app/embeddings/
 app/german_model.bin
 app/cc.en.300.bin
 app/old/
+app/out/
 app/book/
 app/examples/
 app/.vector_cache/
 app/savefiles/
+pdf/
 
