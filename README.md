@@ -1,5 +1,5 @@
 # wordembeddings
-Files for the course "Word Embeddings organisieren" at the Julius-Maximilians-University, SS20.
+In a series of experiments, an English Amazon review corpus was used to examined how **sentiment analysis** with *CNNs + word embeddings* performs in comparison to other models such as *BERT*, *logistic regression* or *SVM*.
 
 
 ## Structure
